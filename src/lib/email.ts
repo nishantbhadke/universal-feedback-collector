@@ -3,7 +3,9 @@ import fs from 'fs';
 import path from 'path';
 import { FeedbackSubmission } from './storage';
 
-const EMAIL_LOG_DIR = path.join(process.cwd(), '.data');
+const EMAIL_LOG_DIR = process.env.VERCEL 
+  ? '/tmp' 
+  : path.join(process.cwd(), '.data');
 const EMAIL_LOG_FILE = path.join(EMAIL_LOG_DIR, 'email-logs.txt');
 
 export async function sendFeedbackNotification(feedback: FeedbackSubmission): Promise<boolean> {
@@ -115,8 +117,12 @@ export async function sendFeedbackNotification(feedback: FeedbackSubmission): Pr
 
   // 2. Logging Fallback (Standard Developer Mode)
   try {
-    if (!fs.existsSync(EMAIL_LOG_DIR)) {
-      fs.mkdirSync(EMAIL_LOG_DIR, { recursive: true });
+    try {
+      if (!fs.existsSync(EMAIL_LOG_DIR)) {
+        fs.mkdirSync(EMAIL_LOG_DIR, { recursive: true });
+      }
+    } catch (dirErr) {
+      console.warn('Warning: Failed to create email log directory (read-only environment):', dirErr);
     }
 
     const divider = '='.repeat(80);
