@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Checklist & Progress Tracker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap');
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0b0f19;
+      color: #f3f4f6;
+    }
+    h1, h2, h3, .font-heading {
+      font-family: 'Outfit', sans-serif;
+    }
+    .glass-card {
+      background: rgba(17, 24, 39, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+  </style>
+</head>
+<body class="min-h-screen py-10 px-4">
+  <div class="max-w-4xl mx-auto space-y-8">
+    
+    <!-- Header -->
+    <header class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-6 border-b border-gray-800">
+      <div>
+        <h1 class="text-3xl font-extrabold text-white">Project Tasks & Timeline</h1>
+        <p class="text-gray-400 text-sm mt-1">Universal Project Review & Contribution Collector Tracker</p>
+      </div>
+      <div class="mt-4 sm:mt-0 px-4 py-2 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-center">
+        <span class="text-2xl font-bold text-indigo-400 font-heading">0%</span>
+        <span class="block text-[10px] text-gray-400 uppercase tracking-widest font-semibold">Overall Progress</span>
+      </div>
+    </header>
+
+    <!-- Checklist grid -->
+    <main class="space-y-6">
+      
+      <!-- Phase 1: Setup -->
+      <section class="glass-card rounded-2xl p-6 space-y-4 shadow-lg">
+        <h2 class="text-xl font-bold text-indigo-400 flex items-center">
+          <span class="h-6 w-6 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center mr-2 text-xs">P1</span>
+          Phase 1: Environment & Scaffolding
+        </h2>
+        <div class="space-y-3">
+          <div class="flex items-center space-x-3 p-3 rounded-lg bg-white/5 border border-white/5">
+            <input type="checkbox" class="h-5 w-5 rounded border-gray-700 bg-gray-900 text-brand-600 focus:ring-brand-500" disabled>
+            <div class="flex-1">
+              <span class="text-sm font-medium text-gray-200">Initialize Next.js 15+ TS & Tailwind App</span>
+              <span class="block text-xs text-indigo-400 font-mono mt-0.5">npx create-next-app ./</span>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[10px] bg-amber-500/10 text-amber-400 font-semibold border border-amber-500/20 uppercase tracking-wider">Awaiting Start</span>
+          </div>
+
+          <div class="flex items-center space-x-3 p-3 rounded-lg bg-white/5 border border-white/5">
+            <input type="checkbox" class="h-5 w-5 rounded border-gray-700 bg-gray-900 text-brand-600 focus:ring-brand-500" disabled>
+            <div class="flex-1">
+              <span class="text-sm font-medium text-gray-200">Configure Obsidian Log Synchronization</span>
+              <span class="block text-xs text-gray-400 mt-0.5">Connect D:\Obsidian Stuff and setup automatic git commits</span>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[10px] bg-amber-500/10 text-amber-400 font-semibold border border-amber-500/20 uppercase tracking-wider">Awaiting Start</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Phase 2: Data Storage & Service Layer -->
+      <section class="glass-card rounded-2xl p-6 space-y-4 shadow-lg">
+        <h2 class="text-xl font-bold text-indigo-400 flex items-center">
+          <span class="h-6 w-6 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center mr-2 text-xs">P2</span>
+          Phase 2: Core Storage & Services
+        </h2>
+        <div class="space-y-3">
+          <div class="flex items-center space-x-3 p-3 rounded-lg bg-white/5 border border-white/5">
+            <input type="checkbox" class="h-5 w-5 rounded border-gray-700 bg-gray-900 text-brand-600 focus:ring-brand-500" disabled>
+            <div class="flex-1">
+              <span class="text-sm font-medium text-gray-200">Storage Abstraction & Local File Fallback</span>
+              <span class="block text-xs text-gray-400 mt-0.5">Define StorageProvider interface and local JSON fallback client</span>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[10px] bg-amber-500/10 text-amber-400 font-semibold border border-amber-500/20 uppercase tracking-wider">Awaiting Start</span>
+          </div>
+
+          <div class="flex items-center space-x-3 p-3 rounded-lg bg-white/5 border border-white/5">
+            <input type="checkbox" class="h-5 w-5 rounded border-gray-700 bg-gray-900 text-brand-600 focus:ring-brand-500" disabled>
+            <div class="flex-1">
+              <span class="text-sm font-medium text-gray-200">Google Sheets Storage Integration</span>
+              <span class="block text-xs text-gray-400 mt-0.5">Integrate Googleapis client, dynamically creating worksheets per project</span>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[10px] bg-amber-500/10 text-amber-400 font-semibold border border-amber-500/20 uppercase tracking-wider">Awaiting Start</span>
+          </div>
+
+          <div class="flex items-center space-x-3 p-3 rounded-lg bg-white/5 border border-white/5">
+            <input type="checkbox" class="h-5 w-5 rounded border-gray-700 bg-gray-900 text-brand-600 focus:ring-brand-500" disabled>
+            <div class="flex-1">
+              <span class="text-sm font-medium text-gray-200">SMTP HTML Email Alerts Trigger</span>
+              <span class="block text-xs text-gray-400 mt-0.5">Configure nodemailer service, support local email console logs</span>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[10px] bg-amber-500/10 text-amber-400 font-semibold border border-amber-500/20 uppercase tracking-wider">Awaiting Start</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Phase 3: Frontend & Components -->
+      <section class="glass-card rounded-2xl p-6 space-y-4 shadow-lg">
+        <h2 class="text-xl font-bold text-indigo-400 flex items-center">
+          <span class="h-6 w-6 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center mr-2 text-xs">P3</span>
+          Phase 3: Beautiful Responsive Frontend
+        </h2>
+        <div class="space-y-3">
+          <div class="flex items-center space-x-3 p-3 rounded-lg bg-white/5 border border-white/5">
+            <input type="checkbox" class="h-5 w-5 rounded border-gray-700 bg-gray-900 text-brand-600 focus:ring-brand-500" disabled>
+            <div class="flex-1">
+              <span class="text-sm font-medium text-gray-200">Submission Form, Quote Module, and Token Setup</span>
+              <span class="block text-xs text-gray-400 mt-0.5">Design dynamic project list, ratings, credibility levels, honeypot, and canvas screenshot tool</span>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[10px] bg-amber-500/10 text-amber-400 font-semibold border border-amber-500/20 uppercase tracking-wider">Awaiting Start</span>
+          </div>
+
+          <div class="flex items-center space-x-3 p-3 rounded-lg bg-white/5 border border-white/5">
+            <input type="checkbox" class="h-5 w-5 rounded border-gray-700 bg-gray-900 text-brand-600 focus:ring-brand-500" disabled>
+            <div class="flex-1">
+              <span class="text-sm font-medium text-gray-200">Public Projects Custom Views (`/project/[projectName]`)</span>
+              <span class="block text-xs text-gray-400 mt-0.5">Build dedicated sharing views locking preselected projects</span>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[10px] bg-amber-500/10 text-amber-400 font-semibold border border-amber-500/20 uppercase tracking-wider">Awaiting Start</span>
+          </div>
+
+          <div class="flex items-center space-x-3 p-3 rounded-lg bg-white/5 border border-white/5">
+            <input type="checkbox" class="h-5 w-5 rounded border-gray-700 bg-gray-900 text-brand-600 focus:ring-brand-500" disabled>
+            <div class="flex-1">
+              <span class="text-sm font-medium text-gray-200">Personal Submissions History & Upvotes</span>
+              <span class="block text-xs text-gray-400 mt-0.5">Allow users to browse, search, and upvote their own or other entries via token lists</span>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[10px] bg-amber-500/10 text-amber-400 font-semibold border border-amber-500/20 uppercase tracking-wider">Awaiting Start</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Phase 4: Admin Dashboard -->
+      <section class="glass-card rounded-2xl p-6 space-y-4 shadow-lg">
+        <h2 class="text-xl font-bold text-indigo-400 flex items-center">
+          <span class="h-6 w-6 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center mr-2 text-xs">P4</span>
+          Phase 4: Admin Control Dashboard
+        </h2>
+        <div class="space-y-3">
+          <div class="flex items-center space-x-3 p-3 rounded-lg bg-white/5 border border-white/5">
+            <input type="checkbox" class="h-5 w-5 rounded border-gray-700 bg-gray-900 text-brand-600 focus:ring-brand-500" disabled>
+            <div class="flex-1">
+              <span class="text-sm font-medium text-gray-200">Interactive Dashboard Metrics & CSS Charts</span>
+              <span class="block text-xs text-gray-400 mt-0.5">Display counts, top contributors, categories, rating trends, and project distributions</span>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[10px] bg-amber-500/10 text-amber-400 font-semibold border border-amber-500/20 uppercase tracking-wider">Awaiting Start</span>
+          </div>
+
+          <div class="flex items-center space-x-3 p-3 rounded-lg bg-white/5 border border-white/5">
+            <input type="checkbox" class="h-5 w-5 rounded border-gray-700 bg-gray-900 text-brand-600 focus:ring-brand-500" disabled>
+            <div class="flex-1">
+              <span class="text-sm font-medium text-gray-200">Admin Authentication & Passphrase Verification</span>
+              <span class="block text-xs text-gray-400 mt-0.5">Provide secure entry, set project archives, and manage active dynamic categories</span>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[10px] bg-amber-500/10 text-amber-400 font-semibold border border-amber-500/20 uppercase tracking-wider">Awaiting Start</span>
+          </div>
+
+          <div class="flex items-center space-x-3 p-3 rounded-lg bg-white/5 border border-white/5">
+            <input type="checkbox" class="h-5 w-5 rounded border-gray-700 bg-gray-900 text-brand-600 focus:ring-brand-500" disabled>
+            <div class="flex-1">
+              <span class="text-sm font-medium text-gray-200">1-Click GitHub Issues & Sentiment Tweaks</span>
+              <span class="block text-xs text-gray-400 mt-0.5">Allow status workflow adjustments, manual sentiment toggles, and issue generation</span>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[10px] bg-amber-500/10 text-amber-400 font-semibold border border-amber-500/20 uppercase tracking-wider">Awaiting Start</span>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</body>
+</html>

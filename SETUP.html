@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Setup & Operations Guide: Universal Feedback Collector</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap');
+    body {
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(circle at top right, rgba(99, 102, 241, 0.15), transparent 40%),
+                  radial-gradient(circle at bottom left, rgba(79, 70, 225, 0.1), transparent 40%),
+                  #0b0f19;
+      color: #f3f4f6;
+    }
+    h1, h2, h3, .font-heading {
+      font-family: 'Outfit', sans-serif;
+    }
+    .glass-card {
+      background: rgba(17, 24, 39, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+  </style>
+</head>
+<body class="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-4xl mx-auto space-y-10">
+    
+    <!-- Header -->
+    <header class="text-center space-y-3">
+      <div class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+        SETUP & OPERATIONAL MANUAL
+      </div>
+      <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-white via-indigo-100 to-indigo-300 bg-clip-text text-transparent">
+        Universal Feedback Collector Setup Guide
+      </h1>
+      <p class="text-gray-400 text-sm max-w-xl mx-auto leading-relaxed">
+        Configure environment variables, connect Google Sheets, bootstrap nodemailer SMTP alert notification servers, and spin up active dev pipelines.
+      </p>
+    </header>
+
+    <!-- Operational Core Quick start -->
+    <section class="glass-card rounded-2xl p-6 sm:p-8 space-y-6">
+      <h2 class="text-xl font-bold text-indigo-400 border-b border-gray-800 pb-2">🚀 Developer Zero-Config Quickstart</h2>
+      <p class="text-xs text-gray-300 leading-relaxed">
+        The application is engineered with an abstract storage factory. Out of the box, with **zero configuration or external API keys**, it runs on a robust, persistent local JSON database fallback at <code>.data/db.json</code>. You can test submissions, upvotes, dashboard setups, and console emails instantly!
+      </p>
+      
+      <div class="space-y-2">
+        <h3 class="text-xs font-bold text-white uppercase tracking-wider">Start Development Server:</h3>
+        <pre class="bg-black/40 p-4 rounded-xl text-xs text-indigo-300 font-mono overflow-x-auto">
+npm run dev
+# Opens interface at: http://localhost:3000
+        </pre>
+      </div>
+    </section>
+
+    <!-- Environmental Variables config -->
+    <section class="glass-card rounded-2xl p-6 sm:p-8 space-y-6">
+      <h2 class="text-xl font-bold text-indigo-400 border-b border-gray-800 pb-2">⚙️ Environment Configurations (.env.local)</h2>
+      <p class="text-xs text-gray-300 leading-relaxed">
+        Create a file named <code>.env.local</code> in the root folder of the project to activate premium production synchronization (Google Sheets, NodeMailer SMTP notifications, Admin Passphrases):
+      </p>
+
+      <pre class="bg-black/40 p-4 rounded-xl text-xs text-indigo-300 font-mono overflow-x-auto leading-relaxed">
+# ==============================================================================
+# UPRC FEEDBACK COLLECTOR SYSTEM ENVIRONMENT CONFIGURATIONS
+# ==============================================================================
+
+# 1. ADMIN PASSPHRASE CONTROL (Default: admin123)
+ADMIN_PASSPHRASE=admin123
+
+# 2. PHASE 1: GOOGLE SHEETS ACTIVE ENGINE
+# Input Service Account and Spreadsheet keys to disable Local Fallback
+GOOGLE_SERVICE_ACCOUNT_EMAIL=your-service-account@your-project.iam.gserviceaccount.com
+GOOGLE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC...\n-----END PRIVATE KEY-----\n"
+GOOGLE_SHEET_ID=your-google-spreadsheet-id-from-url
+
+# 3. SMTP EMAIL NOTIFICATIONS ENGINE
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your-smtp-email@gmail.com
+SMTP_PASS=your-smtp-app-password
+SMTP_FROM="Universal Feedback Collector" &lt;noreply@collector.com&gt;
+NOTIFICATION_RECIPIENT=your-alert-recipient@email.com
+      </pre>
+    </section>
+
+    <!-- Google Sheet setup walkthrough -->
+    <section class="glass-card rounded-2xl p-6 sm:p-8 space-y-6">
+      <h2 class="text-xl font-bold text-indigo-400 border-b border-gray-800 pb-2">📊 Google Sheets Database Configuration</h2>
+      <div class="space-y-4">
+        <h3 class="text-sm font-semibold text-white">How to connect with Google Service Account:</h3>
+        <ol class="list-decimal pl-5 space-y-2.5 text-xs text-gray-300 leading-relaxed">
+          <li>Create a Google Cloud Platform project and enable the **Google Sheets API**.</li>
+          <li>Navigate to **Credentials**, create a **Service Account** key in JSON format, and save the email and private key.</li>
+          <li>Create a blank Google Sheet in your Google Drive.</li>
+          <li>Click **Share** in the sheet, paste the Service Account Email, and grant it **Editor** permissions.</li>
+          <li>Copy the Spreadsheet ID from the URL (the string between <code>/d/</code> and <code>/edit</code>) and add it to your <code>.env.local</code>.</li>
+          <li><strong>Self-Bootstrapping:</strong> The application automatically creates worksheets (tabs) like <code>_Projects</code>, <code>_Categories</code>, and dynamic tables per project on launch.</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- Production compilation & Deployment -->
+    <section class="glass-card rounded-2xl p-6 sm:p-8 space-y-6">
+      <h2 class="text-xl font-bold text-indigo-400 border-b border-gray-800 pb-2">🚀 Vercel Production Hosting Deployment</h2>
+      <p class="text-xs text-gray-300 leading-relaxed">
+        The application is 100% optimized and structured to build cleanly into static HTML nodes and API Route Lambdas on Vercel:
+      </p>
+      
+      <ol class="list-disc pl-5 space-y-2 text-xs text-gray-300 leading-relaxed">
+        <li>Push this independent repository to your separate GitHub account.</li>
+        <li>Connect the repository to your **Vercel** dashboard.</li>
+        <li>Inject all environmental variables from your <code>.env.local</code> under Vercel **Environment Variables** settings (especially replace double-escaped newlines in your private key safely).</li>
+        <li>Click **Deploy**! Vercel handles compilation, caching, and edge dispatches automatically!</li>
+      </ol>
+    </section>
+
+  </div>
+</body>
+</html>
