@@ -286,14 +286,14 @@ export default function FeedbackForm({ lockedProjectName, onSuccess }: FeedbackF
         </div>
 
         {/* Project & Category Selectors */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="space-y-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-1.5">
             <label className="block text-xs font-bold uppercase tracking-wider text-gray-400">Target Project</label>
             <select
               value={project}
               onChange={(e) => setProject(e.target.value)}
               disabled={!!lockedProjectName}
-              className="w-full px-4 py-2.5 rounded-xl border border-white/10 bg-gray-900/60 text-white focus:outline-none focus:border-indigo-500 transition-colors disabled:opacity-70 disabled:cursor-not-allowed text-sm"
+              className="w-full h-11 px-4 rounded-xl border border-white/10 bg-gray-950/40 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all disabled:opacity-70 disabled:cursor-not-allowed text-sm"
               required
             >
               <option value="" disabled>Select a Project</option>
@@ -306,12 +306,12 @@ export default function FeedbackForm({ lockedProjectName, onSuccess }: FeedbackF
             )}
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <label className="block text-xs font-bold uppercase tracking-wider text-gray-400">Category</label>
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl border border-white/10 bg-gray-900/60 text-white focus:outline-none focus:border-indigo-500 transition-colors text-sm"
+              className="w-full h-11 px-4 rounded-xl border border-white/10 bg-gray-950/40 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm"
               required
             >
               {categories.map((c) => (
@@ -322,50 +322,50 @@ export default function FeedbackForm({ lockedProjectName, onSuccess }: FeedbackF
         </div>
 
         {/* Submitter Metadata */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="space-y-2">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="space-y-1.5">
             <label className="block text-xs font-bold uppercase tracking-wider text-gray-400">Your Name</label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Nishant Bhadke"
-              className="w-full px-4 py-2.5 rounded-xl border border-white/10 bg-gray-900/60 text-white focus:outline-none focus:border-indigo-500 transition-colors text-sm"
+              className="w-full h-11 px-4 rounded-xl border border-white/10 bg-gray-950/40 focus:bg-gray-900/60 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm"
               required
             />
           </div>
 
-          <div className="space-y-2">
-            <label className="block text-xs font-bold uppercase tracking-wider text-gray-400">Email <span className="text-gray-500 font-normal">(Optional)</span></label>
+          <div className="space-y-1.5">
+            <label className="block text-xs font-bold uppercase tracking-wider text-gray-400">Email (Optional)</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="nishant@example.com"
-              className="w-full px-4 py-2.5 rounded-xl border border-white/10 bg-gray-900/60 text-white focus:outline-none focus:border-indigo-500 transition-colors text-sm"
+              className="w-full h-11 px-4 rounded-xl border border-white/10 bg-gray-950/40 focus:bg-gray-900/60 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm"
             />
           </div>
 
-          <div className="space-y-2">
-            <label className="block text-xs font-bold uppercase tracking-wider text-gray-400">Location / Country <span className="text-gray-500 font-normal">(Optional)</span></label>
+          <div className="space-y-1.5">
+            <label className="block text-xs font-bold uppercase tracking-wider text-gray-400">Location (Optional)</label>
             <input
               type="text"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
               placeholder="India"
-              className="w-full px-4 py-2.5 rounded-xl border border-white/10 bg-gray-900/60 text-white focus:outline-none focus:border-indigo-500 transition-colors text-sm"
+              className="w-full h-11 px-4 rounded-xl border border-white/10 bg-gray-950/40 focus:bg-gray-900/60 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm"
             />
           </div>
         </div>
 
         {/* Roles & Credibility */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="space-y-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-1.5">
             <label className="block text-xs font-bold uppercase tracking-wider text-gray-400">Your Role</label>
             <select
               value={role}
               onChange={(e) => setRole(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl border border-white/10 bg-gray-900/60 text-white focus:outline-none focus:border-indigo-500 transition-colors text-sm"
+              className="w-full h-11 px-4 rounded-xl border border-white/10 bg-gray-950/40 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm"
             >
               <option value="User">User</option>
               <option value="Tester">Tester</option>
@@ -374,12 +374,12 @@ export default function FeedbackForm({ lockedProjectName, onSuccess }: FeedbackF
             </select>
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <label className="block text-xs font-bold uppercase tracking-wider text-gray-400">Reviewer Credibility</label>
             <select
               value={credibility}
               onChange={(e) => setCredibility(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl border border-white/10 bg-gray-900/60 text-white focus:outline-none focus:border-indigo-500 transition-colors text-sm"
+              className="w-full h-11 px-4 rounded-xl border border-white/10 bg-gray-950/40 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm"
             >
               <option value="User">Standard User</option>
               <option value="Power User">Power User</option>
@@ -420,52 +420,52 @@ export default function FeedbackForm({ lockedProjectName, onSuccess }: FeedbackF
 
         {/* Title & Feedback Body */}
         <div className="space-y-4">
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <label className="block text-xs font-bold uppercase tracking-wider text-gray-400">Summary / Title</label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g., Performance crash on dashboard load or Menstrual Cycle V3 widgets"
-              className="w-full px-4 py-2.5 rounded-xl border border-white/10 bg-gray-900/60 text-white focus:outline-none focus:border-indigo-500 transition-colors text-sm"
+              className="w-full h-11 px-4 rounded-xl border border-white/10 bg-gray-950/40 focus:bg-gray-900/60 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm"
               required
             />
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <label className="block text-xs font-bold uppercase tracking-wider text-gray-400">Detailed Message</label>
             <textarea
               value={feedback}
               onChange={(e) => setFeedback(e.target.value)}
               placeholder="Describe your review, suggest changes, document bug details, or reference code improvements..."
               rows={4}
-              className="w-full px-4 py-2.5 rounded-xl border border-white/10 bg-gray-900/60 text-white focus:outline-none focus:border-indigo-500 transition-colors text-sm resize-y leading-relaxed"
+              className="w-full px-4 py-3 rounded-xl border border-white/10 bg-gray-950/40 focus:bg-gray-900/60 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm resize-y leading-relaxed"
               required
             />
           </div>
         </div>
 
         {/* References Links */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <label className="block text-xs font-bold uppercase tracking-wider text-gray-400">GitHub Profile URL <span className="text-gray-500 font-normal">(Optional)</span></label>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-1.5">
+            <label className="block text-xs font-bold uppercase tracking-wider text-gray-400">GitHub Profile URL (Optional)</label>
             <input
               type="url"
               value={githubProfile}
               onChange={(e) => setGithubProfile(e.target.value)}
               placeholder="https://github.com/nishantbhadke"
-              className="w-full px-4 py-2.5 rounded-xl border border-white/10 bg-gray-900/60 text-white focus:outline-none focus:border-indigo-500 transition-colors text-sm"
+              className="w-full h-11 px-4 rounded-xl border border-white/10 bg-gray-950/40 focus:bg-gray-900/60 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm"
             />
           </div>
 
-          <div className="space-y-2">
-            <label className="block text-xs font-bold uppercase tracking-wider text-gray-400">PR / Commit Reference Link <span className="text-gray-500 font-normal">(Optional)</span></label>
+          <div className="space-y-1.5">
+            <label className="block text-xs font-bold uppercase tracking-wider text-gray-400">PR / Commit Link (Optional)</label>
             <input
               type="url"
               value={prLink}
               onChange={(e) => setPrLink(e.target.value)}
               placeholder="https://github.com/nishantbhadke/fitsaas/pull/4"
-              className="w-full px-4 py-2.5 rounded-xl border border-white/10 bg-gray-900/60 text-white focus:outline-none focus:border-indigo-500 transition-colors text-sm"
+              className="w-full h-11 px-4 rounded-xl border border-white/10 bg-gray-950/40 focus:bg-gray-900/60 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm"
             />
           </div>
         </div>
