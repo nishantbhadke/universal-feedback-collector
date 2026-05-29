@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Star, Upload, Trash2, CheckCircle, AlertCircle, Loader2, PenTool } from 'lucide-react';
+import { Star, Upload, Trash2, CheckCircle, AlertCircle, Loader2, PenTool, User, Info, FileText } from 'lucide-react';
 import { generateToken } from '@/lib/utils';
 
 interface Project {
@@ -21,7 +21,7 @@ interface FeedbackFormProps {
 }
 
 export default function FeedbackForm({ lockedProjectName, onSuccess }: FeedbackFormProps) {
-  // Loaded lists
+  // Config loaded lists
   const [projects, setProjects] = useState<Project[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loadingConfig, setLoadingConfig] = useState(true);
@@ -33,15 +33,16 @@ export default function FeedbackForm({ lockedProjectName, onSuccess }: FeedbackF
   const [email, setEmail] = useState('');
   const [location, setLocation] = useState('');
   const [role, setRole] = useState('User');
-  const [credibility, setCredibility] = useState('User');
+  const [credibility, setCredibility] = useState('Regular User');
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [title, setTitle] = useState('');
   const [feedback, setFeedback] = useState('');
+  const [suggestions, setSuggestions] = useState('');
   const [githubProfile, setGithubProfile] = useState('');
   const [prLink, setPrLink] = useState('');
   
-  // Stealth bot honeypot state (must remain empty)
+  // Honeypot anti-spam
   const [website, setWebsite] = useState('');
 
   // Screenshot states
@@ -49,12 +50,12 @@ export default function FeedbackForm({ lockedProjectName, onSuccess }: FeedbackF
   const [compressing, setCompressing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Submission control
+  // Submission controls
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
-  // Fetch projects and categories on load
+  // Fetch configs
   useEffect(() => {
     const fetchConfig = async () => {
       try {
@@ -65,25 +66,21 @@ export default function FeedbackForm({ lockedProjectName, onSuccess }: FeedbackF
         const projs = await projRes.json();
         const cats = await catRes.json();
 
-        // Only active and non-archived projects
         const activeProjs = projs.filter((p: Project) => p.isActive && !p.isArchived);
         setProjects(activeProjs);
 
-        // Only active categories
         const activeCats = cats.filter((c: Category) => c.isActive);
         setCategories(activeCats);
 
-        // Auto-select first active category
         if (activeCats.length > 0) {
           setCategory(activeCats[0].name);
         }
 
-        // Auto-select project if not locked and active projects exist
         if (!lockedProjectName && activeProjs.length > 0) {
           setProject(activeProjs[0].name);
         }
       } catch (err) {
-        console.error('Failed to load project/category configs:', err);
+        console.error('Failed to load form configs:', err);
       } finally {
         setLoadingConfig(false);
       }
@@ -92,14 +89,13 @@ export default function FeedbackForm({ lockedProjectName, onSuccess }: FeedbackF
     fetchConfig();
   }, [lockedProjectName]);
 
-  // Handle locked project name update
   useEffect(() => {
     if (lockedProjectName) {
       setProject(lockedProjectName);
     }
   }, [lockedProjectName]);
 
-  // Client-side canvas screenshot compression
+  // Client-side compression
   const handleScreenshotChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -119,7 +115,6 @@ export default function FeedbackForm({ lockedProjectName, onSuccess }: FeedbackF
         let width = img.width;
         let height = img.height;
 
-        // Downscale to 1024px maximum width
         const MAX_WIDTH = 1024;
         if (width > MAX_WIDTH) {
           height = Math.round((height * MAX_WIDTH) / width);
@@ -132,7 +127,6 @@ export default function FeedbackForm({ lockedProjectName, onSuccess }: FeedbackF
         const ctx = canvas.getContext('2d');
         if (ctx) {
           ctx.drawImage(img, 0, 0, width, height);
-          // Compress to JPEG with 0.7 quality
           const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
           setScreenshotBase64(compressedDataUrl);
         }
@@ -150,7 +144,18 @@ export default function FeedbackForm({ lockedProjectName, onSuccess }: FeedbackF
     }
   };
 
-  // Form submission handler
+  // Star dynamic texts helper
+  const getRatingLabel = (score: number) => {
+    switch (score) {
+      case 1: return '1/5 - Poor';
+      case 2: return '2/5 - Fair';
+      case 3: return '3/5 - Average';
+      case 4: return '4/5 - Good';
+      case 5: return '5/5 - Excellent';
+      default: return 'Select a Rating';
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitError('');
@@ -169,8 +174,10 @@ export default function FeedbackForm({ lockedProjectName, onSuccess }: FeedbackF
     setSubmitting(true);
 
     try {
-      // Get or create local tracking token
       const token = generateToken();
+
+      // Industrial standard details merger: combine feedback and suggestions cleanly to preserve sheet columns!
+      const combinedFeedback = feedback.trim() + (suggestions.trim() ? '\n\n💡 Suggestions:\n' + suggestions.trim() : '');
 
       const response = await fetch('/api/feedback', {
         method: 'POST',
@@ -184,13 +191,13 @@ export default function FeedbackForm({ lockedProjectName, onSuccess }: FeedbackF
           role,
           rating,
           title,
-          feedback,
+          feedback: combinedFeedback,
           githubProfile: githubProfile || undefined,
           prLink: prLink || undefined,
           attachmentUrl: screenshotBase64 || undefined,
-          credibility,
+          credibility: credibility,
           userToken: token,
-          website // Stealth honeypot field
+          website
         })
       });
 
@@ -202,15 +209,13 @@ export default function FeedbackForm({ lockedProjectName, onSuccess }: FeedbackF
 
       setSubmitSuccess(true);
       
-      // Reset form fields
       setName('');
       setEmail('');
       setLocation('');
       setRating(0);
       setTitle('');
       setFeedback('');
-      setGithubProfile('');
-      setPrLink('');
+      setSuggestions('');
       removeScreenshot();
 
       if (onSuccess) {
@@ -225,43 +230,44 @@ export default function FeedbackForm({ lockedProjectName, onSuccess }: FeedbackF
 
   if (loadingConfig) {
     return (
-      <div className="glass-card rounded-2xl p-8 border border-white/5 bg-gray-950/20 text-center flex flex-col items-center justify-center space-y-3 min-h-[300px]">
+      <div className="glass-card rounded-2xl p-8 bg-gray-950/20 text-center flex flex-col items-center justify-center space-y-3 min-h-[300px] border border-white/5 shadow-inner">
         <Loader2 className="h-8 w-8 text-indigo-400 animate-spin" />
-        <span className="text-gray-400 text-sm">Initializing collection systems...</span>
+        <span className="text-gray-400 text-xs font-mono">Loading dynamic collectors...</span>
       </div>
     );
   }
 
   return (
-    <div className="glass-card rounded-2xl p-6 sm:p-8 border border-white/5 bg-gray-950/20 relative shadow-xl">
+    <div className="glass-card rounded-2xl p-6 border border-white/5 bg-gray-950/30 relative shadow-2xl overflow-hidden focus:outline-none">
       
       {/* Dynamic Success overlay */}
       {submitSuccess && (
-        <div className="absolute inset-0 z-20 rounded-2xl bg-gray-950/95 flex flex-col items-center justify-center text-center p-6 space-y-4 animate-fade-in">
-          <div className="h-16 w-16 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center border border-emerald-500/20 shadow-lg shadow-emerald-500/5">
-            <CheckCircle className="h-8 w-8" />
+        <div className="absolute inset-0 z-20 bg-gray-950/95 flex flex-col items-center justify-center text-center p-6 space-y-4 animate-fade-in">
+          <div className="h-14 w-14 rounded-2xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center border border-emerald-500/20 shadow-lg shadow-emerald-500/5">
+            <CheckCircle className="h-6.5 w-6.5" />
           </div>
-          <div className="space-y-1">
-            <h3 className="text-xl font-bold text-white font-heading">Feedback Submitted Successfully!</h3>
-            <p className="text-gray-400 text-sm max-w-sm">
-              Your submission has been captured. The owner has been notified and it is synced directly under the project's sheet dashboard!
+          <div className="space-y-1.5">
+            <h3 className="text-lg font-bold text-white font-heading">Feedback Submitted!</h3>
+            <p className="text-gray-400 text-xs max-w-xs leading-relaxed">
+              Your review has been successfully logged. It is synced under the master project sheet and the maintainer has been notified.
             </p>
           </div>
           <button
             onClick={() => setSubmitSuccess(false)}
-            className="px-5 py-2 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-500/20 transition-all cursor-pointer"
+            className="px-4 py-2 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-500/20 transition-all cursor-pointer"
           >
             Submit Another Feedback
           </button>
         </div>
       )}
 
-      <div className="flex items-center space-x-3 mb-6 border-b border-gray-800 pb-4">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 shadow-md shadow-indigo-500/5 flex-shrink-0">
-          <PenTool className="h-5 w-5 text-indigo-400" />
+      {/* Modern SaaS Header */}
+      <div className="flex items-center space-x-3 mb-6 border-b border-white/5 pb-4">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 shadow-inner flex-shrink-0">
+          <PenTool className="h-4.5 w-4.5" />
         </div>
         <div>
-          <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight leading-none">
+          <h2 className="text-lg font-bold text-white tracking-tight leading-none">
             Review Submission Form
           </h2>
           <span className="text-[10px] text-gray-500 font-mono block mt-1 tracking-wider uppercase">
@@ -274,8 +280,8 @@ export default function FeedbackForm({ lockedProjectName, onSuccess }: FeedbackF
         
         {/* Alerts */}
         {submitError && (
-          <div className="flex items-center space-x-2.5 p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-sm animate-shake">
-            <AlertCircle className="h-5 w-5 flex-shrink-0" />
+          <div className="flex items-center space-x-2 p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs animate-shake">
+            <AlertCircle className="h-4 w-4 flex-shrink-0" />
             <span>{submitError}</span>
           </div>
         )}
@@ -294,205 +300,268 @@ export default function FeedbackForm({ lockedProjectName, onSuccess }: FeedbackF
           />
         </div>
 
-        {/* Project & Category Selectors */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-1.5">
-            <label className="block text-xs font-bold uppercase tracking-wider text-gray-400">Target Project</label>
-            <select
-              value={project}
-              onChange={(e) => setProject(e.target.value)}
-              disabled={!!lockedProjectName}
-              className="w-full h-11 px-4 rounded-xl border border-white/10 bg-gray-950/40 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all disabled:opacity-70 disabled:cursor-not-allowed text-sm"
-              required
-            >
-              <option value="" disabled>Select a Project</option>
-              {projects.map((p) => (
-                <option key={p.name} value={p.name}>{p.name}</option>
-              ))}
-            </select>
-            {lockedProjectName && (
-              <span className="text-[10px] text-indigo-400 font-semibold block mt-1 tracking-wide">Locked: Sharing view activated</span>
-            )}
+        {/* SECTION A: REVIEWER INFORMATION */}
+        <div className="p-4 rounded-xl border border-white/5 bg-white/2 space-y-4">
+          <div className="flex items-center space-x-1.5 border-b border-white/5 pb-2">
+            <User className="h-3.5 w-3.5 text-indigo-400" />
+            <h3 className="text-xs font-bold text-gray-300 uppercase tracking-wider font-heading">
+              A. Reviewer Information
+            </h3>
           </div>
 
-          <div className="space-y-1.5">
-            <label className="block text-xs font-bold uppercase tracking-wider text-gray-400">Category</label>
-            <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="w-full h-11 px-4 rounded-xl border border-white/10 bg-gray-950/40 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm"
-              required
-            >
-              {categories.map((c) => (
-                <option key={c.name} value={c.name}>{c.name}</option>
-              ))}
-            </select>
-          </div>
-        </div>
+          <div className="space-y-3">
+            {/* Name input */}
+            <div className="space-y-1.5">
+              <label className="block text-xs font-medium text-gray-400">
+                Name <span className="text-rose-500">*</span>
+              </label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Nishant Bhadke"
+                className="w-full h-11 px-4 rounded-xl border border-white/10 bg-gray-950/40 focus:bg-gray-900/60 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm"
+                required
+              />
+            </div>
 
-        {/* Submitter Metadata */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="space-y-1.5">
-            <label className="block text-xs font-bold uppercase tracking-wider text-gray-400">Your Name</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Nishant Bhadke"
-              className="w-full h-11 px-4 rounded-xl border border-white/10 bg-gray-950/40 focus:bg-gray-900/60 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm"
-              required
-            />
-          </div>
-
-          <div className="space-y-1.5">
-            <label className="block text-xs font-bold uppercase tracking-wider text-gray-400">Email (Optional)</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="nishant@example.com"
-              className="w-full h-11 px-4 rounded-xl border border-white/10 bg-gray-950/40 focus:bg-gray-900/60 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm"
-            />
-          </div>
-
-          <div className="space-y-1.5">
-            <label className="block text-xs font-bold uppercase tracking-wider text-gray-400">Location (Optional)</label>
-            <input
-              type="text"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              placeholder="India"
-              className="w-full h-11 px-4 rounded-xl border border-white/10 bg-gray-950/40 focus:bg-gray-900/60 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm"
-            />
-          </div>
-        </div>
-
-        {/* Roles & Credibility */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-1.5">
-            <label className="block text-xs font-bold uppercase tracking-wider text-gray-400">Your Role</label>
-            <select
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              className="w-full h-11 px-4 rounded-xl border border-white/10 bg-gray-950/40 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm"
-            >
-              <option value="User">User</option>
-              <option value="Tester">Tester</option>
-              <option value="Developer">Developer</option>
-              <option value="Contributor">Contributor</option>
-            </select>
-          </div>
-
-          <div className="space-y-1.5">
-            <label className="block text-xs font-bold uppercase tracking-wider text-gray-400">Reviewer Credibility</label>
-            <select
-              value={credibility}
-              onChange={(e) => setCredibility(e.target.value)}
-              className="w-full h-11 px-4 rounded-xl border border-white/10 bg-gray-950/40 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm"
-            >
-              <option value="User">Standard User</option>
-              <option value="Power User">Power User</option>
-              <option value="Tester">Beta Tester</option>
-              <option value="Contributor">Contributor</option>
-              <option value="Maintainer">Maintainer</option>
-            </select>
-          </div>
-        </div>
-
-        {/* Dynamic Star Rating */}
-        <div className="space-y-2">
-          <label className="block text-xs font-bold uppercase tracking-wider text-gray-400">Rating</label>
-          <div className="flex items-center space-x-1.5 pt-1">
-            {[1, 2, 3, 4, 5].map((star) => (
-              <button
-                key={star}
-                type="button"
-                onClick={() => setRating(star)}
-                onMouseEnter={() => setHoverRating(star)}
-                onMouseLeave={() => setHoverRating(0)}
-                className="focus:outline-none transform hover:scale-110 transition-transform cursor-pointer"
-              >
-                <Star
-                  className={`h-7 w-7 transition-colors ${
-                    (hoverRating || rating) >= star
-                      ? 'fill-amber-400 text-amber-400'
-                      : 'text-gray-600 hover:text-amber-300'
-                  }`}
+            {/* Email & Location inline */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="space-y-1.5">
+                <label className="block text-xs font-medium text-gray-400">Email (Optional)</label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="nishant@example.com"
+                  className="w-full h-11 px-4 rounded-xl border border-white/10 bg-gray-950/40 focus:bg-gray-900/60 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm"
                 />
-              </button>
-            ))}
-            <span className="text-xs text-gray-400 ml-3 font-semibold font-heading">
-              {rating > 0 ? `${rating} / 5 Stars` : 'Select a Rating'}
-            </span>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="block text-xs font-medium text-gray-400">Location (Optional)</label>
+                <input
+                  type="text"
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                  placeholder="India"
+                  className="w-full h-11 px-4 rounded-xl border border-white/10 bg-gray-950/40 focus:bg-gray-900/60 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm"
+                />
+              </div>
+            </div>
+
+            {/* Role & Reviewer Type inline */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="space-y-1.5">
+                <label className="block text-xs font-medium text-gray-400">Role</label>
+                <select
+                  value={role}
+                  onChange={(e) => setRole(e.target.value)}
+                  className="w-full h-11 px-3.5 rounded-xl border border-white/10 bg-gray-950/40 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm"
+                >
+                  <option value="User">User</option>
+                  <option value="Tester">Tester</option>
+                  <option value="Developer">Developer</option>
+                  <option value="Contributor">Contributor</option>
+                </select>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="block text-xs font-medium text-gray-400">Reviewer Type</label>
+                <select
+                  value={credibility}
+                  onChange={(e) => setCredibility(e.target.value)}
+                  className="w-full h-11 px-3.5 rounded-xl border border-white/10 bg-gray-950/40 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm"
+                >
+                  <option value="First-Time User">First-Time User</option>
+                  <option value="Regular User">Regular User</option>
+                  <option value="Contributor">Contributor</option>
+                  <option value="Maintainer">Maintainer</option>
+                  <option value="Developer">Developer</option>
+                </select>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Title & Feedback Body */}
-        <div className="space-y-4">
-          <div className="space-y-1.5">
-            <label className="block text-xs font-bold uppercase tracking-wider text-gray-400">Summary / Title</label>
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="e.g., Performance crash on dashboard load or Menstrual Cycle V3 widgets"
-              className="w-full h-11 px-4 rounded-xl border border-white/10 bg-gray-950/40 focus:bg-gray-900/60 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm"
-              required
-            />
+        {/* SECTION B: REVIEW INFORMATION */}
+        <div className="p-4 rounded-xl border border-white/5 bg-white/2 space-y-4">
+          <div className="flex items-center space-x-1.5 border-b border-white/5 pb-2">
+            <Info className="h-3.5 w-3.5 text-indigo-400" />
+            <h3 className="text-xs font-bold text-gray-300 uppercase tracking-wider font-heading">
+              B. Review Details
+            </h3>
           </div>
 
-          <div className="space-y-1.5">
-            <label className="block text-xs font-bold uppercase tracking-wider text-gray-400">Detailed Message</label>
-            <textarea
-              value={feedback}
-              onChange={(e) => setFeedback(e.target.value)}
-              placeholder="Describe your review, suggest changes, document bug details, or reference code improvements..."
-              rows={4}
-              className="w-full px-4 py-3 rounded-xl border border-white/10 bg-gray-950/40 focus:bg-gray-900/60 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm resize-y leading-relaxed"
-              required
-            />
+          <div className="space-y-4">
+            {/* Project & Category Selectors */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="space-y-1.5">
+                <label className="block text-xs font-medium text-gray-400">
+                  Target Project <span className="text-rose-500">*</span>
+                </label>
+                <select
+                  value={project}
+                  onChange={(e) => setProject(e.target.value)}
+                  disabled={!!lockedProjectName}
+                  className="w-full h-11 px-3.5 rounded-xl border border-white/10 bg-gray-950/40 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all disabled:opacity-70 disabled:cursor-not-allowed text-sm"
+                  required
+                >
+                  <option value="" disabled>Select a Project</option>
+                  {projects.map((p) => (
+                    <option key={p.name} value={p.name}>{p.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="block text-xs font-medium text-gray-400">
+                  Category <span className="text-rose-500">*</span>
+                </label>
+                <select
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  className="w-full h-11 px-3.5 rounded-xl border border-white/10 bg-gray-950/40 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm"
+                  required
+                >
+                  {categories.map((c) => (
+                    <option key={c.name} value={c.name}>{c.name}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* High Contrast Dynamic Rating Stars */}
+            <div className="space-y-2">
+              <label className="block text-xs font-medium text-gray-400">
+                Rating <span className="text-rose-500">*</span>
+              </label>
+              
+              <div className="flex flex-col space-y-1">
+                <div className="flex items-center space-x-2 pt-0.5">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      type="button"
+                      onClick={() => setRating(star)}
+                      onMouseEnter={() => setHoverRating(star)}
+                      onMouseLeave={() => setHoverRating(0)}
+                      className="focus:outline-none transform hover:scale-115 transition-transform cursor-pointer"
+                    >
+                      <Star
+                        className={`h-7 w-7 transition-colors drop-shadow ${
+                          (hoverRating || rating) >= star
+                            ? 'fill-amber-400 text-amber-400'
+                            : 'text-gray-700 hover:text-amber-300'
+                        }`}
+                      />
+                    </button>
+                  ))}
+                  
+                  {/* Dynamic Rating Label */}
+                  <span className="text-xs font-bold text-amber-400 ml-3 font-heading tracking-wide">
+                    {getRatingLabel(hoverRating || rating)}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* SECTION C: FEEDBACK */}
+        <div className="p-4 rounded-xl border border-white/5 bg-white/2 space-y-4">
+          <div className="flex items-center space-x-1.5 border-b border-white/5 pb-2">
+            <FileText className="h-3.5 w-3.5 text-indigo-400" />
+            <h3 className="text-xs font-bold text-gray-300 uppercase tracking-wider font-heading">
+              C. Feedback & Suggestions
+            </h3>
+          </div>
+
+          <div className="space-y-3">
+            {/* Title Summary */}
+            <div className="space-y-1.5">
+              <label className="block text-xs font-medium text-gray-400">
+                Summary / Title <span className="text-rose-500">*</span>
+              </label>
+              <input
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="e.g., Performance crash on dashboard load or Menstrual Cycle V3 widgets"
+                className="w-full h-11 px-4 rounded-xl border border-white/10 bg-gray-950/40 focus:bg-gray-900/60 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm"
+                required
+              />
+            </div>
+
+            {/* Detailed Description */}
+            <div className="space-y-1.5">
+              <label className="block text-xs font-medium text-gray-400">
+                Detailed Message <span className="text-rose-500">*</span>
+              </label>
+              <textarea
+                value={feedback}
+                onChange={(e) => setFeedback(e.target.value)}
+                placeholder="Describe your review, document bug details, or reference code improvements..."
+                rows={3}
+                className="w-full px-4 py-2.5 rounded-xl border border-white/10 bg-gray-950/40 focus:bg-gray-900/60 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm resize-y leading-relaxed"
+                required
+              />
+            </div>
+
+            {/* Suggestions & Improvements */}
+            <div className="space-y-1.5">
+              <label className="block text-xs font-medium text-gray-400">
+                Suggestions (Optional)
+              </label>
+              <textarea
+                value={suggestions}
+                onChange={(e) => setSuggestions(e.target.value)}
+                placeholder="Share any structural improvements or specific recommendations to resolve the issue..."
+                rows={2}
+                className="w-full px-4 py-2.5 rounded-xl border border-white/10 bg-gray-950/40 focus:bg-gray-900/60 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm resize-y leading-relaxed"
+              />
+            </div>
           </div>
         </div>
 
         {/* References Links */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div className="space-y-1.5">
-            <label className="block text-xs font-bold uppercase tracking-wider text-gray-400">GitHub Profile URL (Optional)</label>
+            <label className="block text-xs font-medium text-gray-400">GitHub Profile URL (Optional)</label>
             <input
               type="url"
               value={githubProfile}
               onChange={(e) => setGithubProfile(e.target.value)}
               placeholder="https://github.com/nishantbhadke"
-              className="w-full h-11 px-4 rounded-xl border border-white/10 bg-gray-950/40 focus:bg-gray-900/60 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm"
+              className="w-full h-11 px-4 rounded-xl border border-white/10 bg-gray-950/40 focus:bg-gray-900/60 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm"
             />
           </div>
 
           <div className="space-y-1.5">
-            <label className="block text-xs font-bold uppercase tracking-wider text-gray-400">PR / Commit Link (Optional)</label>
+            <label className="block text-xs font-medium text-gray-400">PR / Commit Link (Optional)</label>
             <input
               type="url"
               value={prLink}
               onChange={(e) => setPrLink(e.target.value)}
               placeholder="https://github.com/nishantbhadke/fitsaas/pull/4"
-              className="w-full h-11 px-4 rounded-xl border border-white/10 bg-gray-950/40 focus:bg-gray-900/60 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm"
+              className="w-full h-11 px-4 rounded-xl border border-white/10 bg-gray-950/40 focus:bg-gray-900/60 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm"
             />
           </div>
         </div>
 
-        {/* Canvas Image Upload Block */}
+        {/* Screenshot Upload with preview */}
         <div className="space-y-2">
-          <label className="block text-xs font-bold uppercase tracking-wider text-gray-400">Attach Screenshot <span className="text-gray-500 font-normal">(Optional, Compressed Client-side)</span></label>
+          <label className="block text-xs font-medium text-gray-400">Attach Screenshot (Optional)</label>
           
-          <div className="flex flex-col sm:flex-row items-center gap-4">
+          <div className="flex flex-col sm:flex-row items-center gap-3">
             
-            {/* Click to upload box */}
             <div 
               onClick={() => fileInputRef.current?.click()}
-              className="w-full sm:flex-1 h-24 border-2 border-dashed border-white/10 rounded-xl bg-gray-950/20 hover:bg-gray-900/40 hover:border-indigo-500/40 transition-all flex flex-col items-center justify-center cursor-pointer text-gray-400 space-y-1 group"
+              className="w-full sm:flex-1 h-20 border-2 border-dashed border-white/5 rounded-xl bg-gray-950/20 hover:bg-gray-900/40 hover:border-indigo-500/40 transition-all flex flex-col items-center justify-center cursor-pointer text-gray-400 space-y-0.5 group"
             >
-              <Upload className="h-5 w-5 text-gray-500 group-hover:text-indigo-400 transition-colors" />
-              <span className="text-[11px] font-semibold text-gray-300">Click to upload screenshot</span>
-              <span className="text-[9px] text-gray-500 font-mono uppercase tracking-wide">Image Auto-Compressed (Max 1024px)</span>
+              <Upload className="h-4.5 w-4.5 text-gray-500 group-hover:text-indigo-400 transition-colors" />
+              <span className="text-[10px] font-semibold text-gray-300">Click to upload screenshot</span>
+              <span className="text-[8px] text-gray-500 font-mono uppercase tracking-wide">Compressed Client-side (&lt;100KB)</span>
               
               <input
                 ref={fileInputRef}
@@ -503,9 +572,8 @@ export default function FeedbackForm({ lockedProjectName, onSuccess }: FeedbackF
               />
             </div>
 
-            {/* Compressed Preview display */}
             {screenshotBase64 && (
-              <div className="relative h-24 w-40 border border-white/10 rounded-xl overflow-hidden bg-black/40 group shadow-md flex-shrink-0 animate-scale-up">
+              <div className="relative h-20 w-36 border border-white/10 rounded-xl overflow-hidden bg-black/40 group shadow flex-shrink-0 animate-scale-up">
                 <img
                   src={screenshotBase64}
                   alt="Screenshot preview"
@@ -515,20 +583,19 @@ export default function FeedbackForm({ lockedProjectName, onSuccess }: FeedbackF
                   <button
                     type="button"
                     onClick={removeScreenshot}
-                    className="p-1.5 rounded-lg bg-rose-600 hover:bg-rose-500 text-white cursor-pointer transition-transform duration-200 transform hover:scale-105"
+                    className="p-1.5 rounded-lg bg-rose-600 hover:bg-rose-500 text-white cursor-pointer transition-all transform hover:scale-105"
                     title="Delete image"
                   >
-                    <Trash2 className="h-4.5 w-4.5" />
+                    <Trash2 className="h-4 w-4" />
                   </button>
                 </div>
               </div>
             )}
 
-            {/* Compressing loader */}
             {compressing && (
-              <div className="h-24 w-40 border border-white/5 bg-gray-950/40 rounded-xl flex flex-col items-center justify-center text-indigo-400 text-xs font-mono space-y-1.5">
-                <Loader2 className="h-5 w-5 animate-spin" />
-                <span>Compressing canvas...</span>
+              <div className="h-20 w-36 border border-white/5 bg-gray-950/40 rounded-xl flex flex-col items-center justify-center text-indigo-400 text-[10px] font-mono space-y-1">
+                <Loader2 className="h-4.5 w-4.5 animate-spin" />
+                <span>Compressing...</span>
               </div>
             )}
           </div>
@@ -538,15 +605,15 @@ export default function FeedbackForm({ lockedProjectName, onSuccess }: FeedbackF
         <button
           type="submit"
           disabled={submitting || compressing}
-          className="w-full py-3 rounded-xl font-semibold bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white cursor-pointer shadow-lg shadow-indigo-600/20 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-indigo-600/35 transition-all duration-200 flex items-center justify-center space-x-2"
+          className="w-full h-12 rounded-xl font-bold bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white cursor-pointer shadow-lg shadow-indigo-600/20 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-indigo-600/35 transition-all duration-200 flex items-center justify-center space-x-2 text-sm"
         >
           {submitting ? (
             <>
-              <Loader2 className="h-5 w-5 animate-spin" />
+              <Loader2 className="h-4.5 w-4.5 animate-spin" />
               <span>Logging Contribution...</span>
             </>
           ) : (
-            <span>Submit Feedback Entry</span>
+            <span>Submit Review</span>
           )}
         </button>
 

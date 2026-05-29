@@ -25,16 +25,16 @@ export default function Home() {
         <QuoteModule />
       </div>
 
-      {/* Main Interface Layout grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 px-4 sm:px-6 lg:px-8">
+      {/* Main Interface Layout grid (60% Left / 40% Right Split) */}
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 px-4 sm:px-6 lg:px-8">
         
-        {/* Left Side: Recent Database Feedbacks List (takes 2/3 width) */}
-        <div className="lg:col-span-2 space-y-6">
+        {/* Left Side: Recent Database Feedbacks List (takes 3/5 width = 60%) */}
+        <div className="lg:col-span-3 space-y-6">
           <FeedbackList key={`list-${refreshKey}`} />
         </div>
 
-        {/* Right Side: Interactive Feedback Form (takes 1/3 width) */}
-        <div>
+        {/* Right Side: Interactive Feedback Form (takes 2/5 width = 40%) */}
+        <div className="lg:col-span-2">
           <FeedbackForm onSuccess={handleSubmissionSuccess} />
         </div>
 

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Project Checklist & Progress Tracker</title>
+  <title>Checklist & Redesign Progress Tracker</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -24,172 +24,210 @@
     }
   </script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
     body {
       font-family: 'Inter', sans-serif;
-      background: #0b0f19;
+      background: radial-gradient(circle at top right, rgba(99, 102, 241, 0.08), transparent 40%),
+                  #070a13;
       color: #f3f4f6;
     }
     h1, h2, h3, .font-heading {
       font-family: 'Outfit', sans-serif;
     }
     .glass-card {
-      background: rgba(17, 24, 39, 0.7);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
     }
   </style>
 </head>
-<body class="min-h-screen py-10 px-4">
+<body class="min-h-screen py-10 px-4 sm:px-6 lg:px-8">
   <div class="max-w-4xl mx-auto space-y-8">
     
     <!-- Header -->
-    <header class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-6 border-b border-gray-800">
+    <header class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-6 border-b border-gray-800 gap-4">
       <div>
-        <h1 class="text-3xl font-extrabold text-white">Project Tasks & Timeline</h1>
-        <p class="text-gray-400 text-sm mt-1">Universal Project Review & Contribution Collector Tracker</p>
+        <h1 class="text-3xl font-extrabold text-white tracking-tight">Redesign Task Checklist</h1>
+        <p class="text-gray-400 text-xs mt-1">Universal Project Review & Contribution Collector Redesign Hub</p>
       </div>
-      <div class="mt-4 sm:mt-0 px-4 py-2 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-center">
-        <span class="text-2xl font-bold text-indigo-400 font-heading">0%</span>
-        <span class="block text-[10px] text-gray-400 uppercase tracking-widest font-semibold">Overall Progress</span>
+      <div class="px-4 py-2 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-center flex flex-col justify-center min-w-[120px] shadow-inner">
+        <span class="text-2xl font-bold text-indigo-400 font-heading">20%</span>
+        <span class="block text-[8px] text-gray-500 uppercase tracking-widest font-bold">Audit & Scaffolding</span>
       </div>
     </header>
 
     <!-- Checklist grid -->
     <main class="space-y-6">
       
-      <!-- Phase 1: Setup -->
+      <!-- Phase 1: Visual Hierarchy & Layout Split -->
       <section class="glass-card rounded-2xl p-6 space-y-4 shadow-lg">
-        <h2 class="text-xl font-bold text-indigo-400 flex items-center">
-          <span class="h-6 w-6 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center mr-2 text-xs">P1</span>
-          Phase 1: Environment & Scaffolding
+        <h2 class="text-lg font-bold text-indigo-400 flex items-center">
+          <span class="h-6 w-6 rounded-lg bg-indigo-500/20 text-indigo-300 flex items-center justify-center mr-2 text-xs font-bold">P1</span>
+          Phase 1: Visual Hierarchy & Layout Split (60/40 ratio)
         </h2>
         <div class="space-y-3">
           <div class="flex items-center space-x-3 p-3 rounded-lg bg-white/5 border border-white/5">
-            <input type="checkbox" class="h-5 w-5 rounded border-gray-700 bg-gray-900 text-brand-600 focus:ring-brand-500" disabled>
+            <input type="checkbox" class="h-5 w-5 rounded border-gray-700 bg-gray-900 text-indigo-600 focus:ring-indigo-500" checked disabled>
             <div class="flex-1">
-              <span class="text-sm font-medium text-gray-200">Initialize Next.js 15+ TS & Tailwind App</span>
-              <span class="block text-xs text-indigo-400 font-mono mt-0.5">npx create-next-app ./</span>
+              <span class="text-sm font-medium text-gray-400 line-through">Scaffold layout implementation details & plans</span>
+              <span class="block text-[10px] text-gray-500 font-mono mt-0.5">COMPLETED - setup checklist dashboards</span>
             </div>
-            <span class="px-2 py-0.5 rounded text-[10px] bg-amber-500/10 text-amber-400 font-semibold border border-amber-500/20 uppercase tracking-wider">Awaiting Start</span>
+            <span class="px-2 py-0.5 rounded text-[8px] bg-emerald-500/10 text-emerald-400 font-bold border border-emerald-500/20 uppercase tracking-wider">Done</span>
           </div>
 
           <div class="flex items-center space-x-3 p-3 rounded-lg bg-white/5 border border-white/5">
-            <input type="checkbox" class="h-5 w-5 rounded border-gray-700 bg-gray-900 text-brand-600 focus:ring-brand-500" disabled>
+            <input type="checkbox" class="h-5 w-5 rounded border-gray-700 bg-gray-900 text-indigo-600 focus:ring-indigo-500" disabled>
             <div class="flex-1">
-              <span class="text-sm font-medium text-gray-200">Configure Obsidian Log Synchronization</span>
-              <span class="block text-xs text-gray-400 mt-0.5">Connect D:\Obsidian Stuff and setup automatic git commits</span>
+              <span class="text-sm font-medium text-gray-200">Restructure page layouts to 60% / 40% desktop split</span>
+              <span class="block text-[10px] text-gray-400 font-mono mt-0.5">Modify src/app/page.tsx & src/app/project/[projectName]/page.tsx</span>
             </div>
-            <span class="px-2 py-0.5 rounded text-[10px] bg-amber-500/10 text-amber-400 font-semibold border border-amber-500/20 uppercase tracking-wider">Awaiting Start</span>
+            <span class="px-2 py-0.5 rounded text-[8px] bg-indigo-500/10 text-indigo-400 font-bold border border-indigo-500/20 uppercase tracking-wider">Awaiting Plan Approval</span>
+          </div>
+
+          <div class="flex items-center space-x-3 p-3 rounded-lg bg-white/5 border border-white/5">
+            <input type="checkbox" class="h-5 w-5 rounded border-gray-700 bg-gray-900 text-indigo-600 focus:ring-indigo-500" disabled>
+            <div class="flex-1">
+              <span class="text-sm font-medium text-gray-200">Code dynamic dashboard summary statistics cards</span>
+              <span class="block text-[10px] text-gray-400 mt-0.5">Integrate 4 summary metric boxes at the top of FeedbackList</span>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[8px] bg-indigo-500/10 text-indigo-400 font-bold border border-indigo-500/20 uppercase tracking-wider">Awaiting Plan Approval</span>
           </div>
         </div>
       </section>
 
-      <!-- Phase 2: Data Storage & Service Layer -->
+      <!-- Phase 2: Form UX Redesign & State Variable Fixes -->
       <section class="glass-card rounded-2xl p-6 space-y-4 shadow-lg">
-        <h2 class="text-xl font-bold text-indigo-400 flex items-center">
-          <span class="h-6 w-6 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center mr-2 text-xs">P2</span>
-          Phase 2: Core Storage & Services
+        <h2 class="text-lg font-bold text-indigo-400 flex items-center">
+          <span class="h-6 w-6 rounded-lg bg-indigo-500/20 text-indigo-300 flex items-center justify-center mr-2 text-xs font-bold">P2</span>
+          Phase 2: Form UX Redesign & Reference Fixes
         </h2>
         <div class="space-y-3">
           <div class="flex items-center space-x-3 p-3 rounded-lg bg-white/5 border border-white/5">
-            <input type="checkbox" class="h-5 w-5 rounded border-gray-700 bg-gray-900 text-brand-600 focus:ring-brand-500" disabled>
+            <input type="checkbox" class="h-5 w-5 rounded border-gray-700 bg-gray-900 text-indigo-600 focus:ring-indigo-500" disabled>
             <div class="flex-1">
-              <span class="text-sm font-medium text-gray-200">Storage Abstraction & Local File Fallback</span>
-              <span class="block text-xs text-gray-400 mt-0.5">Define StorageProvider interface and local JSON fallback client</span>
+              <span class="text-sm font-medium text-gray-200">Fix runtime ReferenceError inside FeedbackForm</span>
+              <span class="block text-[10px] text-gray-400 font-mono mt-0.5">Define missing githubProfile & prLink state values</span>
             </div>
-            <span class="px-2 py-0.5 rounded text-[10px] bg-amber-500/10 text-amber-400 font-semibold border border-amber-500/20 uppercase tracking-wider">Awaiting Start</span>
+            <span class="px-2 py-0.5 rounded text-[8px] bg-indigo-500/10 text-indigo-400 font-bold border border-indigo-500/20 uppercase tracking-wider">Awaiting Plan Approval</span>
           </div>
 
           <div class="flex items-center space-x-3 p-3 rounded-lg bg-white/5 border border-white/5">
-            <input type="checkbox" class="h-5 w-5 rounded border-gray-700 bg-gray-900 text-brand-600 focus:ring-brand-500" disabled>
+            <input type="checkbox" class="h-5 w-5 rounded border-gray-700 bg-gray-900 text-indigo-600 focus:ring-indigo-500" disabled>
             <div class="flex-1">
-              <span class="text-sm font-medium text-gray-200">Google Sheets Storage Integration</span>
-              <span class="block text-xs text-gray-400 mt-0.5">Integrate Googleapis client, dynamically creating worksheets per project</span>
+              <span class="text-sm font-medium text-gray-200">Group form fields into Section A, B, and C card boxes</span>
+              <span class="block text-[10px] text-gray-400 font-mono mt-0.5">Section A: Reviewer Info | Section B: Details | Section C: Feedback</span>
             </div>
-            <span class="px-2 py-0.5 rounded text-[10px] bg-amber-500/10 text-amber-400 font-semibold border border-amber-500/20 uppercase tracking-wider">Awaiting Start</span>
+            <span class="px-2 py-0.5 rounded text-[8px] bg-indigo-500/10 text-indigo-400 font-bold border border-indigo-500/20 uppercase tracking-wider">Awaiting Plan Approval</span>
           </div>
 
           <div class="flex items-center space-x-3 p-3 rounded-lg bg-white/5 border border-white/5">
-            <input type="checkbox" class="h-5 w-5 rounded border-gray-700 bg-gray-900 text-brand-600 focus:ring-brand-500" disabled>
+            <input type="checkbox" class="h-5 w-5 rounded border-gray-700 bg-gray-900 text-indigo-600 focus:ring-indigo-500" disabled>
             <div class="flex-1">
-              <span class="text-sm font-medium text-gray-200">SMTP HTML Email Alerts Trigger</span>
-              <span class="block text-xs text-gray-400 mt-0.5">Configure nodemailer service, support local email console logs</span>
+              <span class="text-sm font-medium text-gray-200">Sentence case labels & clarify reviewer credibility options</span>
+              <span class="block text-[10px] text-gray-400 font-mono mt-0.5">Rename Reviewer Credibility to Reviewer Type; clearly mark required (*) vs optional inputs</span>
             </div>
-            <span class="px-2 py-0.5 rounded text-[10px] bg-amber-500/10 text-amber-400 font-semibold border border-amber-500/20 uppercase tracking-wider">Awaiting Start</span>
+            <span class="px-2 py-0.5 rounded text-[8px] bg-indigo-500/10 text-indigo-400 font-bold border border-indigo-500/20 uppercase tracking-wider">Awaiting Plan Approval</span>
           </div>
         </div>
       </section>
 
-      <!-- Phase 3: Frontend & Components -->
+      <!-- Phase 3: Star Rating UX -->
       <section class="glass-card rounded-2xl p-6 space-y-4 shadow-lg">
-        <h2 class="text-xl font-bold text-indigo-400 flex items-center">
-          <span class="h-6 w-6 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center mr-2 text-xs">P3</span>
-          Phase 3: Beautiful Responsive Frontend
+        <h2 class="text-lg font-bold text-indigo-400 flex items-center">
+          <span class="h-6 w-6 rounded-lg bg-indigo-500/20 text-indigo-300 flex items-center justify-center mr-2 text-xs font-bold">P3</span>
+          Phase 3: Interactive Star Rating Component
         </h2>
         <div class="space-y-3">
           <div class="flex items-center space-x-3 p-3 rounded-lg bg-white/5 border border-white/5">
-            <input type="checkbox" class="h-5 w-5 rounded border-gray-700 bg-gray-900 text-brand-600 focus:ring-brand-500" disabled>
+            <input type="checkbox" class="h-5 w-5 rounded border-gray-700 bg-gray-900 text-indigo-600 focus:ring-indigo-500" disabled>
             <div class="flex-1">
-              <span class="text-sm font-medium text-gray-200">Submission Form, Quote Module, and Token Setup</span>
-              <span class="block text-xs text-gray-400 mt-0.5">Design dynamic project list, ratings, credibility levels, honeypot, and canvas screenshot tool</span>
+              <span class="text-sm font-medium text-gray-200">Implement dynamic rating description feedback labels</span>
+              <span class="block text-[10px] text-gray-400 font-mono mt-0.5">Bind labels "1 - Poor" up to "5 - Excellent" under active star triggers</span>
             </div>
-            <span class="px-2 py-0.5 rounded text-[10px] bg-amber-500/10 text-amber-400 font-semibold border border-amber-500/20 uppercase tracking-wider">Awaiting Start</span>
+            <span class="px-2 py-0.5 rounded text-[8px] bg-indigo-500/10 text-indigo-400 font-bold border border-indigo-500/20 uppercase tracking-wider">Awaiting Plan Approval</span>
           </div>
 
           <div class="flex items-center space-x-3 p-3 rounded-lg bg-white/5 border border-white/5">
-            <input type="checkbox" class="h-5 w-5 rounded border-gray-700 bg-gray-900 text-brand-600 focus:ring-brand-500" disabled>
+            <input type="checkbox" class="h-5 w-5 rounded border-gray-700 bg-gray-900 text-indigo-600 focus:ring-indigo-500" disabled>
             <div class="flex-1">
-              <span class="text-sm font-medium text-gray-200">Public Projects Custom Views (`/project/[projectName]`)</span>
-              <span class="block text-xs text-gray-400 mt-0.5">Build dedicated sharing views locking preselected projects</span>
+              <span class="text-sm font-medium text-gray-200">Increase star element contrast ratios</span>
+              <span class="block text-[10px] text-gray-400 mt-0.5">Color active/hover stars with full fill-amber-400 and high visibility highlights</span>
             </div>
-            <span class="px-2 py-0.5 rounded text-[10px] bg-amber-500/10 text-amber-400 font-semibold border border-amber-500/20 uppercase tracking-wider">Awaiting Start</span>
-          </div>
-
-          <div class="flex items-center space-x-3 p-3 rounded-lg bg-white/5 border border-white/5">
-            <input type="checkbox" class="h-5 w-5 rounded border-gray-700 bg-gray-900 text-brand-600 focus:ring-brand-500" disabled>
-            <div class="flex-1">
-              <span class="text-sm font-medium text-gray-200">Personal Submissions History & Upvotes</span>
-              <span class="block text-xs text-gray-400 mt-0.5">Allow users to browse, search, and upvote their own or other entries via token lists</span>
-            </div>
-            <span class="px-2 py-0.5 rounded text-[10px] bg-amber-500/10 text-amber-400 font-semibold border border-amber-500/20 uppercase tracking-wider">Awaiting Start</span>
+            <span class="px-2 py-0.5 rounded text-[8px] bg-indigo-500/10 text-indigo-400 font-bold border border-indigo-500/20 uppercase tracking-wider">Awaiting Plan Approval</span>
           </div>
         </div>
       </section>
 
-      <!-- Phase 4: Admin Dashboard -->
+      <!-- Phase 4: Notion-Grade Empty States & Discovery -->
       <section class="glass-card rounded-2xl p-6 space-y-4 shadow-lg">
-        <h2 class="text-xl font-bold text-indigo-400 flex items-center">
-          <span class="h-6 w-6 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center mr-2 text-xs">P4</span>
-          Phase 4: Admin Control Dashboard
+        <h2 class="text-lg font-bold text-indigo-400 flex items-center">
+          <span class="h-6 w-6 rounded-lg bg-indigo-500/20 text-indigo-300 flex items-center justify-center mr-2 text-xs font-bold">P4</span>
+          Phase 4: Empty States & condensed Toolbar
         </h2>
         <div class="space-y-3">
           <div class="flex items-center space-x-3 p-3 rounded-lg bg-white/5 border border-white/5">
-            <input type="checkbox" class="h-5 w-5 rounded border-gray-700 bg-gray-900 text-brand-600 focus:ring-brand-500" disabled>
+            <input type="checkbox" class="h-5 w-5 rounded border-gray-700 bg-gray-900 text-indigo-600 focus:ring-indigo-500" disabled>
             <div class="flex-1">
-              <span class="text-sm font-medium text-gray-200">Interactive Dashboard Metrics & CSS Charts</span>
-              <span class="block text-xs text-gray-400 mt-0.5">Display counts, top contributors, categories, rating trends, and project distributions</span>
+              <span class="text-sm font-medium text-gray-200">Design beautiful, center-aligned empty state elements</span>
+              <span class="block text-[10px] text-gray-400 mt-0.5">Add elegant open folder icons, bold labels, and focal submit-review button links</span>
             </div>
-            <span class="px-2 py-0.5 rounded text-[10px] bg-amber-500/10 text-amber-400 font-semibold border border-amber-500/20 uppercase tracking-wider">Awaiting Start</span>
+            <span class="px-2 py-0.5 rounded text-[8px] bg-indigo-500/10 text-indigo-400 font-bold border border-indigo-500/20 uppercase tracking-wider">Awaiting Plan Approval</span>
           </div>
 
           <div class="flex items-center space-x-3 p-3 rounded-lg bg-white/5 border border-white/5">
-            <input type="checkbox" class="h-5 w-5 rounded border-gray-700 bg-gray-900 text-brand-600 focus:ring-brand-500" disabled>
+            <input type="checkbox" class="h-5 w-5 rounded border-gray-700 bg-gray-900 text-indigo-600 focus:ring-indigo-500" disabled>
             <div class="flex-1">
-              <span class="text-sm font-medium text-gray-200">Admin Authentication & Passphrase Verification</span>
-              <span class="block text-xs text-gray-400 mt-0.5">Provide secure entry, set project archives, and manage active dynamic categories</span>
+              <span class="text-sm font-medium text-gray-200">Condense search & discovery filters into a horizontal toolbar</span>
+              <span class="block text-[10px] text-gray-400 mt-0.5">Pack search, categories, and rating filters onto a single compressed inline row</span>
             </div>
-            <span class="px-2 py-0.5 rounded text-[10px] bg-amber-500/10 text-amber-400 font-semibold border border-amber-500/20 uppercase tracking-wider">Awaiting Start</span>
+            <span class="px-2 py-0.5 rounded text-[8px] bg-indigo-500/10 text-indigo-400 font-bold border border-indigo-500/20 uppercase tracking-wider">Awaiting Plan Approval</span>
           </div>
 
           <div class="flex items-center space-x-3 p-3 rounded-lg bg-white/5 border border-white/5">
-            <input type="checkbox" class="h-5 w-5 rounded border-gray-700 bg-gray-900 text-brand-600 focus:ring-brand-500" disabled>
+            <input type="checkbox" class="h-5 w-5 rounded border-gray-700 bg-gray-900 text-indigo-600 focus:ring-indigo-500" disabled>
             <div class="flex-1">
-              <span class="text-sm font-medium text-gray-200">1-Click GitHub Issues & Sentiment Tweaks</span>
-              <span class="block text-xs text-gray-400 mt-0.5">Allow status workflow adjustments, manual sentiment toggles, and issue generation</span>
+              <span class="text-sm font-medium text-gray-200">Add dynamic review sorting functionalities</span>
+              <span class="block text-[10px] text-gray-400 font-mono mt-0.5">Integrate newest, oldest, highest rated, and lowest rated dropdown controls</span>
             </div>
-            <span class="px-2 py-0.5 rounded text-[10px] bg-amber-500/10 text-amber-400 font-semibold border border-amber-500/20 uppercase tracking-wider">Awaiting Start</span>
+            <span class="px-2 py-0.5 rounded text-[8px] bg-indigo-500/10 text-indigo-400 font-bold border border-indigo-500/20 uppercase tracking-wider">Awaiting Plan Approval</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Phase 5: Accessibility, Spacing & Verification -->
+      <section class="glass-card rounded-2xl p-6 space-y-4 shadow-lg">
+        <h2 class="text-lg font-bold text-indigo-400 flex items-center">
+          <span class="h-6 w-6 rounded-lg bg-indigo-500/20 text-indigo-300 flex items-center justify-center mr-2 text-xs font-bold">P5</span>
+          Phase 5: Accessibility, Spacing & Production Builds
+        </h2>
+        <div class="space-y-3">
+          <div class="flex items-center space-x-3 p-3 rounded-lg bg-white/5 border border-white/5">
+            <input type="checkbox" class="h-5 w-5 rounded border-gray-700 bg-gray-900 text-indigo-600 focus:ring-indigo-500" disabled>
+            <div class="flex-1">
+              <span class="text-sm font-medium text-gray-200">Ensure high-contrast placeholder & text ratios (WCAG AA)</span>
+              <span class="block text-[10px] text-gray-400 mt-0.5">Upgrade dark placeholders, label tags, and text to high visibility settings</span>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[8px] bg-indigo-500/10 text-indigo-400 font-bold border border-indigo-500/20 uppercase tracking-wider">Awaiting Plan Approval</span>
+          </div>
+
+          <div class="flex items-center space-x-3 p-3 rounded-lg bg-white/5 border border-white/5">
+            <input type="checkbox" class="h-5 w-5 rounded border-gray-700 bg-gray-900 text-indigo-600 focus:ring-indigo-500" disabled>
+            <div class="flex-1">
+              <span class="text-sm font-medium text-gray-200">Standardize spacing (8px grid) and component corner styling</span>
+              <span class="block text-[10px] text-gray-400 mt-0.5">Enforce rounded-xl border curves on inputs, rounded-2xl on dashboard boxes</span>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[8px] bg-indigo-500/10 text-indigo-400 font-bold border border-indigo-500/20 uppercase tracking-wider">Awaiting Plan Approval</span>
+          </div>
+
+          <div class="flex items-center space-x-3 p-3 rounded-lg bg-white/5 border border-white/5">
+            <input type="checkbox" class="h-5 w-5 rounded border-gray-700 bg-gray-900 text-indigo-600 focus:ring-indigo-500" disabled>
+            <div class="flex-1">
+              <span class="text-sm font-medium text-gray-200">Run Next.js webpack verification builds</span>
+              <span class="block text-[10px] text-gray-400 mt-0.5">Validate production bundle outputs have zero TypeScript and compiler warnings</span>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[8px] bg-indigo-500/10 text-indigo-400 font-bold border border-indigo-500/20 uppercase tracking-wider">Awaiting Plan Approval</span>
           </div>
         </div>
       </section>

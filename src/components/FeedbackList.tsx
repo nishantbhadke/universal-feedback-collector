@@ -1,19 +1,24 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Search, Filter, Star, Heart, MapPin, ExternalLink, Calendar, User, Eye, AlertCircle, Loader2 } from 'lucide-react';
+import { Search, Filter, Star, Heart, MapPin, ExternalLink, Calendar, User, Eye, AlertCircle, Loader2, MessageSquare, PlusCircle } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
 import { FeedbackSubmission } from '@/lib/storage';
 
-export default function FeedbackList() {
+interface FeedbackListProps {
+  filterProjectName?: string;
+}
+
+export default function FeedbackList({ filterProjectName }: FeedbackListProps = {}) {
   const [feedbacks, setFeedbacks] = useState<FeedbackSubmission[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Filter configurations
   const [search, setSearch] = useState('');
-  const [projectFilter, setProjectFilter] = useState('');
+  const [projectFilter, setProjectFilter] = useState(filterProjectName || '');
   const [categoryFilter, setCategoryFilter] = useState('');
   const [ratingFilter, setRatingFilter] = useState('');
+  const [sortBy, setSortBy] = useState('newest');
   const [projectsList, setProjectsList] = useState<string[]>([]);
   const [categoriesList, setCategoriesList] = useState<string[]>([]);
 
@@ -70,6 +75,12 @@ export default function FeedbackList() {
   }, []);
 
   useEffect(() => {
+    if (filterProjectName) {
+      setProjectFilter(filterProjectName);
+    }
+  }, [filterProjectName]);
+
+  useEffect(() => {
     fetchFeedback();
   }, [projectFilter, categoryFilter, ratingFilter, search]);
 
@@ -103,6 +114,24 @@ export default function FeedbackList() {
     }
   };
 
+  const getSortedFeedbacks = () => {
+    return [...feedbacks].sort((a, b) => {
+      if (sortBy === 'newest') {
+        return new Date(b.date).getTime() - new Date(a.date).getTime();
+      }
+      if (sortBy === 'oldest') {
+        return new Date(a.date).getTime() - new Date(b.date).getTime();
+      }
+      if (sortBy === 'highest') {
+        return b.rating - a.rating;
+      }
+      if (sortBy === 'lowest') {
+        return a.rating - b.rating;
+      }
+      return 0;
+    });
+  };
+
   return (
     <div className="space-y-6">
       
@@ -122,52 +151,81 @@ export default function FeedbackList() {
         </div>
       )}
 
-      {/* Title Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-gray-800 pb-3">
-        <h2 className="text-xl font-bold text-white flex items-center">
-          <span className="h-6 w-6 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center mr-2 text-xs font-bold font-heading">✦</span>
-          Recent Feedback Repository
-        </h2>
-        <span className="text-[11px] font-bold uppercase tracking-wider bg-white/5 px-2.5 py-1 border border-white/5 text-gray-400 rounded-lg">
-          Total: {feedbacks.length} Submissions
-        </span>
+      {/* Dashboard Summary Statistics Cards */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        {/* Total Reviews Card */}
+        <div className="glass-card rounded-2xl p-4 bg-gray-950/20 border border-white/5 shadow-md space-y-1">
+          <div className="text-[10px] text-gray-500 font-mono tracking-wider uppercase">Total Reviews</div>
+          <div className="text-lg font-bold text-white font-heading">{feedbacks.length}</div>
+        </div>
+
+        {/* Avg Rating Card */}
+        <div className="glass-card rounded-2xl p-4 bg-gray-950/20 border border-white/5 shadow-md space-y-1">
+          <div className="text-[10px] text-gray-500 font-mono tracking-wider uppercase">Average Rating</div>
+          <div className="text-lg font-bold text-amber-400 font-heading flex items-center">
+            <Star className="h-4.5 w-4.5 fill-amber-400 text-amber-400 mr-1.5" />
+            {feedbacks.length > 0 
+              ? (feedbacks.reduce((sum, f) => sum + f.rating, 0) / feedbacks.length).toFixed(1)
+              : '0.0'}
+          </div>
+        </div>
+
+        {/* Projects Reviewed Card */}
+        <div className="glass-card rounded-2xl p-4 bg-gray-950/20 border border-white/5 shadow-md space-y-1">
+          <div className="text-[10px] text-gray-500 font-mono tracking-wider uppercase">Projects</div>
+          <div className="text-lg font-bold text-white font-heading">
+            {new Set(feedbacks.map(f => f.project)).size}
+          </div>
+        </div>
+
+        {/* Contributors Card */}
+        <div className="glass-card rounded-2xl p-4 bg-gray-950/20 border border-white/5 shadow-md space-y-1">
+          <div className="text-[10px] text-gray-500 font-mono tracking-wider uppercase">Contributors</div>
+          <div className="text-lg font-bold text-indigo-400 font-heading">
+            {new Set(feedbacks.map(f => f.email || f.name)).size}
+          </div>
+        </div>
       </div>
 
-      {/* Filter and Search Panel */}
-      <div className="glass-card rounded-2xl p-4 bg-gray-950/20 border border-white/5 grid grid-cols-1 sm:grid-cols-4 gap-3.5 shadow-md">
+      {/* Condensed Search & Sorting Toolbar */}
+      <div className={`glass-card rounded-2xl p-3 bg-gray-950/20 border border-white/5 grid gap-2.5 shadow-md ${
+        filterProjectName ? 'grid-cols-1 sm:grid-cols-4' : 'grid-cols-1 sm:grid-cols-5'
+      }`}>
         
         {/* Search */}
         <div className="relative">
-          <Search className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
+          <Search className="absolute left-3 top-3 h-3.5 w-3.5 text-gray-500" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search feedback..."
-            className="w-full pl-9 pr-4 py-2 rounded-xl border border-white/5 bg-gray-900/60 text-white text-xs focus:outline-none focus:border-indigo-500 transition-colors"
+            placeholder="Search reviews..."
+            className="w-full pl-9 pr-4 h-9 rounded-xl border border-white/5 bg-gray-900/60 text-white placeholder-gray-500 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
           />
         </div>
 
-        {/* Project */}
-        <div>
-          <select
-            value={projectFilter}
-            onChange={(e) => setProjectFilter(e.target.value)}
-            className="w-full px-3 py-2 rounded-xl border border-white/5 bg-gray-900/60 text-white text-xs focus:outline-none focus:border-indigo-500 transition-colors"
-          >
-            <option value="">All Projects</option>
-            {projectsList.map(name => (
-              <option key={name} value={name}>{name}</option>
-            ))}
-          </select>
-        </div>
+        {/* Project (only show if not pre-filtered) */}
+        {!filterProjectName && (
+          <div>
+            <select
+              value={projectFilter}
+              onChange={(e) => setProjectFilter(e.target.value)}
+              className="w-full px-3 h-9 rounded-xl border border-white/5 bg-gray-900/60 text-white text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all cursor-pointer"
+            >
+              <option value="">All Projects</option>
+              {projectsList.map(name => (
+                <option key={name} value={name}>{name}</option>
+              ))}
+            </select>
+          </div>
+        )}
 
         {/* Category */}
         <div>
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="w-full px-3 py-2 rounded-xl border border-white/5 bg-gray-900/60 text-white text-xs focus:outline-none focus:border-indigo-500 transition-colors"
+            className="w-full px-3 h-9 rounded-xl border border-white/5 bg-gray-900/60 text-white text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all cursor-pointer"
           >
             <option value="">All Categories</option>
             {categoriesList.map(name => (
@@ -181,14 +239,28 @@ export default function FeedbackList() {
           <select
             value={ratingFilter}
             onChange={(e) => setRatingFilter(e.target.value)}
-            className="w-full px-3 py-2 rounded-xl border border-white/5 bg-gray-900/60 text-white text-xs focus:outline-none focus:border-indigo-500 transition-colors"
+            className="w-full px-3 h-9 rounded-xl border border-white/5 bg-gray-900/60 text-white text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all cursor-pointer"
           >
             <option value="">All Ratings</option>
-            <option value="5">⭐⭐⭐⭐⭐ (5 Stars)</option>
-            <option value="4">⭐⭐⭐⭐ (4 Stars)</option>
-            <option value="3">⭐⭐⭐ (3 Stars)</option>
-            <option value="2">⭐⭐ (2 Stars)</option>
-            <option value="1">⭐ (1 Star)</option>
+            <option value="5">⭐⭐⭐⭐⭐</option>
+            <option value="4">⭐⭐⭐⭐</option>
+            <option value="3">⭐⭐⭐</option>
+            <option value="2">⭐⭐</option>
+            <option value="1">⭐</option>
+          </select>
+        </div>
+
+        {/* Sort By Dropdown */}
+        <div>
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            className="w-full px-3 h-9 rounded-xl border border-white/5 bg-gray-900/60 text-indigo-300 focus:text-white text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all cursor-pointer"
+          >
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+            <option value="highest">Highest Rated</option>
+            <option value="lowest">Lowest Rated</option>
           </select>
         </div>
 
@@ -201,14 +273,61 @@ export default function FeedbackList() {
           <span className="text-xs text-gray-500 font-mono">Syncing live feedback repositories...</span>
         </div>
       ) : feedbacks.length === 0 ? (
-        <div className="glass-card rounded-2xl p-12 bg-gray-950/20 border border-white/5 text-center flex flex-col items-center justify-center space-y-2">
-          <AlertCircle className="h-8 w-8 text-gray-500" />
-          <h3 className="text-sm font-bold text-gray-300 font-heading">No Submissions Found</h3>
-          <p className="text-xs text-gray-500 max-w-xs">Try adjusting your search query or filters.</p>
-        </div>
+        search || projectFilter || categoryFilter || ratingFilter ? (
+          /* Filtered empty state (Scenario A) */
+          <div className="glass-card rounded-2xl p-12 bg-gray-950/20 border border-white/5 text-center flex flex-col items-center justify-center space-y-3 shadow-lg animate-scale-up">
+            <div className="h-12 w-12 rounded-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 flex items-center justify-center shadow-inner">
+              <Search className="h-5 w-5" />
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-sm font-bold text-gray-300 font-heading">No Results Found</h3>
+              <p className="text-xs text-gray-500 max-w-xs mx-auto leading-relaxed">
+                We couldn't find any reviews matching your current filters. Try resetting them.
+              </p>
+            </div>
+            <button
+              onClick={() => {
+                setSearch('');
+                if (!filterProjectName) setProjectFilter('');
+                setCategoryFilter('');
+                setRatingFilter('');
+              }}
+              className="px-4 py-2 rounded-xl text-xs font-semibold bg-white/5 hover:bg-white/10 text-gray-300 border border-white/5 transition-all cursor-pointer"
+            >
+              Reset All Filters
+            </button>
+          </div>
+        ) : (
+          /* Completely empty state (Scenario B) */
+          <div className="glass-card rounded-2xl p-16 bg-gray-950/20 border border-white/5 text-center flex flex-col items-center justify-center space-y-4 shadow-lg animate-scale-up">
+            <div className="h-14 w-14 rounded-2xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 flex items-center justify-center shadow-inner">
+              <MessageSquare className="h-6.5 w-6.5 animate-pulse" />
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-base font-bold text-white font-heading">No Reviews Yet</h3>
+              <p className="text-xs text-gray-400 max-w-xs mx-auto leading-relaxed">
+                Be the first to share your thoughts, log contributions, or suggest feedback for this project!
+              </p>
+            </div>
+            <button
+              onClick={() => {
+                const formElement = document.getElementById('website')?.closest('form');
+                if (formElement) {
+                  formElement.scrollIntoView({ behavior: 'smooth' });
+                  // Focus first text input inside form
+                  (formElement.querySelector('input[type="text"]') as HTMLInputElement)?.focus();
+                }
+              }}
+              className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-500/20 transition-all cursor-pointer transform hover:scale-105"
+            >
+              <PlusCircle className="h-4 w-4" />
+              <span>Be the first to submit feedback</span>
+            </button>
+          </div>
+        )
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {feedbacks.map((f) => {
+          {getSortedFeedbacks().map((f) => {
             const hasUpvoted = upvotedIds.includes(f.id);
             
             // Sentiment badge style maps

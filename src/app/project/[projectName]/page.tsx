@@ -114,16 +114,19 @@ export default function ProjectPortalPage({ params }: PageProps) {
         </div>
       </header>
 
-      {/* Structured Portal layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      {/* Structured Portal layout (60% Left / 40% Right Split) */}
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
         
-        {/* Main project specific submissions feed */}
-        <div className="lg:col-span-2 space-y-6">
-          <FeedbackList key={`list-${refreshKey}`} />
+        {/* Main project specific submissions feed (takes 3/5 width = 60%) */}
+        <div className="lg:col-span-3 space-y-6">
+          <FeedbackList 
+            key={`list-${refreshKey}`} 
+            filterProjectName={resolvedProjectName}
+          />
         </div>
 
-        {/* Form locked specifically to this project */}
-        <div>
+        {/* Form locked specifically to this project (takes 2/5 width = 40%) */}
+        <div className="lg:col-span-2">
           <FeedbackForm 
             lockedProjectName={resolvedProjectName} 
             onSuccess={handleSubmissionSuccess} 
