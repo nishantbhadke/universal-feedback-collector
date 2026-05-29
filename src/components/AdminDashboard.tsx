@@ -276,6 +276,12 @@ ${feedback.githubProfile ? `\n- **Contributor Profile:** ${feedback.githubProfil
     return acc;
   }, {} as Record<string, number>);
 
+  const sentimentCounts = feedbacks.reduce((acc, f) => {
+    const s = f.sentiment || 'Neutral';
+    acc[s] = (acc[s] || 0) + 1;
+    return acc;
+  }, { Positive: 0, Neutral: 0, Negative: 0 } as Record<string, number>);
+
   // Find Top Contributors (by score = upvotes * 2 + feedback rating)
   const topContributors = Object.values(
     feedbacks.reduce((acc, f) => {
@@ -447,7 +453,7 @@ ${feedback.githubProfile ? `\n- **Contributor Profile:** ${feedback.githubProfil
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             
             {/* Project Distributions Chart (CSS Bar Chart) */}
-            <div className="glass-card rounded-2xl p-5 border border-white/5 bg-gray-950/20 space-y-4 shadow lg:col-span-2">
+            <div className="glass-card rounded-2xl p-5 border border-white/5 bg-gray-950/20 space-y-4 shadow">
               <h3 className="text-sm font-bold uppercase tracking-wider text-gray-400 flex items-center">
                 <BarChart3 className="h-4 w-4 text-indigo-400 mr-1.5" />
                 Submissions Per Project
@@ -474,6 +480,67 @@ ${feedback.githubProfile ? `\n- **Contributor Profile:** ${feedback.githubProfil
                       </div>
                     );
                   })
+                )}
+              </div>
+            </div>
+
+            {/* Sentiment Analysis Chart (Pure CSS Segmented Bar & Stats) */}
+            <div className="glass-card rounded-2xl p-5 border border-white/5 bg-gray-950/20 space-y-4 shadow animate-scale-up">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-gray-400 flex items-center">
+                <Sparkles className="h-4 w-4 text-indigo-400 mr-1.5" />
+                Review Sentiment Analysis
+              </h3>
+
+              <div className="space-y-3 pt-2">
+                {totalReviews === 0 ? (
+                  <p className="text-xs text-gray-500 italic">No sentiment stats recorded...</p>
+                ) : (
+                  <>
+                    {/* Horizontal segmented CSS Bar Chart */}
+                    <div className="flex h-3.5 w-full rounded-full overflow-hidden border border-white/5 bg-gray-900 shadow-inner">
+                      {['Positive', 'Neutral', 'Negative'].map((tone) => {
+                        const count = sentimentCounts[tone] || 0;
+                        const pct = totalReviews > 0 ? Math.round((count / totalReviews) * 100) : 0;
+                        if (pct === 0) return null;
+
+                        const toneGradient = tone === 'Positive'
+                          ? 'from-emerald-500 to-teal-500'
+                          : tone === 'Neutral'
+                          ? 'from-indigo-500 to-violet-500'
+                          : 'from-rose-500 to-pink-500';
+
+                        return (
+                          <div
+                            key={tone}
+                            style={{ width: `${pct}%` }}
+                            className={`h-full bg-gradient-to-r ${toneGradient} transition-all duration-500`}
+                            title={`${tone}: ${count} (${pct}%)`}
+                          />
+                        );
+                      })}
+                    </div>
+
+                    {/* Legendary Stats Row */}
+                    <div className="space-y-2 pt-1">
+                      {['Positive', 'Neutral', 'Negative'].map((tone) => {
+                        const count = sentimentCounts[tone] || 0;
+                        const pct = totalReviews > 0 ? Math.round((count / totalReviews) * 100) : 0;
+
+                        const toneClass = tone === 'Positive' ? 'text-emerald-400' : tone === 'Neutral' ? 'text-indigo-400' : 'text-rose-400';
+                        const dotColor = tone === 'Positive' ? 'bg-emerald-500' : tone === 'Neutral' ? 'bg-indigo-500' : 'bg-rose-500';
+
+                        return (
+                          <div key={tone} className="flex justify-between items-center text-xs font-semibold">
+                            <div className="flex items-center space-x-2">
+                              <span className={`h-2 w-2 rounded-full ${dotColor} shadow-sm animate-pulse`} />
+                              <span className="text-gray-300 font-medium">{tone}</span>
+                            </div>
+                            <span className={`${toneClass} font-mono font-bold`}>{count} ({pct}%)</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </>
                 )}
               </div>
             </div>
