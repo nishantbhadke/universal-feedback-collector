@@ -132,6 +132,21 @@ export default function FeedbackList({ filterProjectName }: FeedbackListProps = 
     });
   };
 
+  // Lightweight markdown-like text parser for **bold** and `code`
+  const renderMarkdown = (text: string) => {
+    if (!text) return null;
+    const parts = text.split(/(\*\*.*?\*\*|`.*?`)/g);
+    return parts.map((part, index) => {
+      if (part.startsWith('**') && part.endsWith('**')) {
+        return <strong key={index} className="font-extrabold text-white">{part.slice(2, -2)}</strong>;
+      }
+      if (part.startsWith('`') && part.endsWith('`')) {
+        return <code key={index} className="px-1.5 py-0.5 rounded bg-white/10 font-mono text-[10px] text-indigo-300 border border-white/5">{part.slice(1, -1)}</code>;
+      }
+      return part;
+    });
+  };
+
   return (
     <div className="space-y-6">
       
@@ -393,7 +408,7 @@ export default function FeedbackList({ filterProjectName }: FeedbackListProps = 
 
                   {/* Feedback text */}
                   <p className="text-xs text-gray-400 leading-relaxed mb-4 line-clamp-3">
-                    {f.feedback}
+                    {renderMarkdown(f.feedback)}
                   </p>
 
                 </div>

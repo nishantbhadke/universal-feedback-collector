@@ -60,6 +60,45 @@ export async function GET(request: Request) {
   }
 }
 
+async function sendDiscordNotification(feedback: FeedbackSubmission) {
+  const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
+  if (!webhookUrl) return;
+
+  try {
+    const stars = '⭐'.repeat(feedback.rating);
+    const embed: any = {
+      title: `✦ ${feedback.title}`,
+      description: feedback.feedback,
+      color: 0x6366f1, // Indigo hex
+      fields: [
+        { name: 'Rating', value: `${stars} (${feedback.rating}/5)`, inline: true },
+        { name: 'Category', value: feedback.category, inline: true },
+        { name: 'Reviewer', value: `${feedback.name} (${feedback.role})`, inline: true }
+      ],
+      footer: { text: `Universal Feedback Collector • ${feedback.project}` },
+      timestamp: new Date().toISOString()
+    };
+
+    if (feedback.githubProfile) {
+      embed.fields.push({ name: 'GitHub Profile', value: `[View Profile](${feedback.githubProfile})`, inline: true });
+    }
+    if (feedback.prLink) {
+      embed.fields.push({ name: 'PR Link', value: `[View PR/Commit](${feedback.prLink})`, inline: true });
+    }
+
+    await fetch(webhookUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        content: `**New Review Logged on Vercel Node!** 🚀`,
+        embeds: [embed]
+      })
+    });
+  } catch (err) {
+    console.error('Discord Webhook Error:', err);
+  }
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -124,9 +163,13 @@ export async function POST(request: Request) {
     });
 
     // 5. Fire non-blocking SMTP notification email in the background
-    // We run it asynchronously to avoid delaying the user submission response
     sendFeedbackNotification(savedSubmission).catch(err => {
       console.error('Background Notification Dispatch Error:', err);
+    });
+
+    // 6. Fire non-blocking Discord Webhook notification
+    sendDiscordNotification(savedSubmission).catch(err => {
+      console.error('Background Discord Dispatch Error:', err);
     });
 
     return NextResponse.json(savedSubmission, { status: 201 });
