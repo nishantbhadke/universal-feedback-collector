@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Outfit, Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
+import ClientSecurityWrapper from "@/components/ClientSecurityWrapper";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -35,13 +36,15 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${outfit.variable} ${inter.variable} h-full antialiased`}>
       <body className="font-sans min-h-full flex flex-col bg-[#0b0f19] text-gray-100 select-none antialiased">
-        <Header />
-        <main className="flex-1 w-full max-w-7xl mx-auto py-8">
-          {children}
-        </main>
-        <footer className="border-t border-white/5 py-8 text-center text-xs text-gray-500 font-mono mt-auto">
-          <p>© {new Date().getFullYear()} Universal Project Review & Contribution Collector System • Standalone Active Sync</p>
-        </footer>
+        <ClientSecurityWrapper>
+          <Header />
+          <main className="flex-1 w-full max-w-7xl mx-auto py-8">
+            {children}
+          </main>
+          <footer className="border-t border-white/5 py-8 text-center text-xs text-gray-500 font-mono mt-auto">
+            <p>© {new Date().getFullYear()} Universal Project Review & Contribution Collector System • Standalone Active Sync</p>
+          </footer>
+        </ClientSecurityWrapper>
       </body>
     </html>
   );

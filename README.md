@@ -1,36 +1,68 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ✦ Universal Project Review & Contribution Collector
 
-## Getting Started
+A centralized, standalone, premium SaaS-grade platform designed to collect, track, and manage project-related feedback, reviews, suggestions, PR history references, and bug reports from testers, users, and collaborators. Similar to Productboard, Linear, and Notion, it preserves a high-contrast dark theme aesthetic.
 
-First, run the development server:
+### 🌐 Live Production URL
+Invite your reviewers to submit feedback directly at:
+**[https://universal-feedback-collector.vercel.app](https://universal-feedback-collector.vercel.app)**
+
+---
+
+## 🌟 Key Features
+
+* **Linear & Notion-Grade UX/UX:** High-hierarchy grid split (60% Feed / 40% Form) for clear visual focus, including elegant 4-metrics dashboard cards.
+* **Client-Side DevTools Security:** Intercepts browser developer Inspect tools by blocking right-clicks and F12, Ctrl+Shift+I/J/C, and Ctrl+U keyboard shortcuts, preventing client inspection or runtime state tampering.
+* **Honeypot Safeguards:** Advanced stealth honeypot anti-spam verification alongside sliding-window API rate limits (max 3 posts per minute) to drop bot spam silently.
+* **Google Sheets API & SQLite Fallbacks:** Direct write-sync Google Sheets database structure that automatically partitions dynamic tabs per project. If Sheet credentials are not configured, it gracefully falls back to local data logs.
+* **Dynamic Star Rating Components:** High-visibility amber yellow ratings that trigger real-time textual descriptions (Poor to Excellent).
+* **Condensed Search & sorting Toolbar:** Responsive horizontal toolbar supporting keyword searches (Title, reviewer name, project) and multi-option sorting (Newest, Oldest, Highest, and Lowest Rated).
+* **Scenario Empty States:** Clean center-aligned open-folder illustrations with active CTA scroll triggers.
+* **Automated SMTP HTML Alerts:** Secure nodemailer compiled notifications delivered on successful submissions (falls back to local logs).
+
+---
+
+## 🚀 Getting Started
+
+### 📦 Installation
+
+Ensure Node.js is installed, then pull down dependencies inside the repository:
+
+```bash
+npm install
+```
+
+### 💻 Local Development
+
+Launch the active Next.js development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open **[http://localhost:3000](http://localhost:3000)** in your browser to view the application locally.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 🔧 Setup Google Sheets & SMTP Alert Keys
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+To activate production dynamic tab synchronization and active alert emails, consult the complete, step-by-step setup documentation:
+👉 **[SETUP.html](file:///C:/Users/nisha/Documents/antigravity/epic-hopper/SETUP.html)**
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 🛠 Tech Stack
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+* **Frontend Framework:** Next.js 16 (Turbopack Engine)
+* **Design Styling:** Tailwind CSS v4, Lucide React Brand Icons
+* **Primary Fonts:** Outfit (Headers), Inter (Body Sans)
+* **Authentication:** পাসফ্রেজ (Passphrase) Server-Side API verification
+* **Local Caches:** SQLite-style `.data/db.json` dynamic file fallback
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 💎 Redesign & Audits Verification Documents
+All timeline checklist, walkthrough, and specification plans are delivered solely as beautifully styled HTML files inside your repository:
+* 📋 **Redesign Checklist Tracker:** [task.html](file:///C:/Users/nisha/Documents/antigravity/epic-hopper/task.html)
+* 💡 **UI/UX Audit Specification Plan:** [implementation_plan.html](file:///C:/Users/nisha/Documents/antigravity/epic-hopper/implementation_plan.html)
+* 🔍 **Verification Walkthrough Logs:** [walkthrough.html](file:///C:/Users/nisha/Documents/antigravity/epic-hopper/walkthrough.html)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+*Standalone Collector Node • Active Sheets Sync • Linear Aesthetics*
