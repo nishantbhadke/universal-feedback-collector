@@ -2,7 +2,9 @@ import fs from 'fs';
 import path from 'path';
 import { StorageProvider, ProjectInfo, CategoryInfo, FeedbackSubmission } from './index';
 
-const DB_DIR = path.join(process.cwd(), '.data');
+const DB_DIR = process.env.VERCEL 
+  ? '/tmp' 
+  : path.join(process.cwd(), '.data');
 const DB_FILE = path.join(DB_DIR, 'db.json');
 
 interface LocalDbSchema {
@@ -22,8 +24,12 @@ export class LocalFileStorageProvider implements StorageProvider {
   private ensureInitialized() {
     if (this.cache) return;
 
-    if (!fs.existsSync(DB_DIR)) {
-      fs.mkdirSync(DB_DIR, { recursive: true });
+    try {
+      if (!fs.existsSync(DB_DIR)) {
+        fs.mkdirSync(DB_DIR, { recursive: true });
+      }
+    } catch (err) {
+      console.warn('Warning: Failed to create local DB directory (read-only environment):', err);
     }
 
     if (fs.existsSync(DB_FILE)) {
